@@ -1,0 +1,233 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------------------------------------------------------------------------
+   ACTS — Act I: Industrial Stone-Slate. Act II: Obsidian Darkroom.
+   Tokens are RGB triplets so Tailwind alpha modifiers work (bg-fg/40).
+--------------------------------------------------------------------------- */
+:root,
+:root[data-act='light'] {
+  --bg: 226 228 233;
+  --bg-2: 203 213 225;
+  --fg: 5 5 7;
+  --line: 5 5 7;
+  --muted: 71 85 105;
+  --panel: 226 228 233;
+  --grid: rgb(5 5 7 / 0.09);
+  --atmos: 0;
+  color-scheme: light;
+}
+
+:root[data-act='dark'] {
+  --bg: 5 5 7;
+  --bg-2: 12 10 12;
+  --fg: 238 238 242;
+  --line: 255 255 255;
+  --muted: 148 148 160;
+  --panel: 10 10 13;
+  --grid: rgb(255 42 42 / 0.07);
+  --atmos: 1;
+  color-scheme: dark;
+}
+
+@property --beam-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@layer base {
+  html {
+    background: rgb(var(--bg));
+    transition: background-color 0.9s cubic-bezier(0.7, 0, 0.2, 1);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  body {
+    @apply font-sans text-fg;
+    background-color: rgb(var(--bg));
+    background-image: linear-gradient(to right, var(--grid) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid) 1px, transparent 1px),
+      linear-gradient(180deg, rgb(var(--bg)) 0%, rgb(var(--bg-2)) 100%);
+    background-size: 88px 88px, 88px 88px, 100% 100%;
+    background-attachment: fixed;
+    transition: background-color 0.9s cubic-bezier(0.7, 0, 0.2, 1), color 0.6s ease;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: #ff2a2a;
+    color: #050507;
+  }
+
+  :focus-visible {
+    outline: 1px solid #ff2a2a;
+    outline-offset: 3px;
+  }
+
+  html.has-custom-cursor,
+  html.has-custom-cursor * {
+    cursor: none !important;
+  }
+}
+
+@layer components {
+  /* Display type: Unbounded black, wide Y2K geometry, crushed tracking. */
+  .type-display {
+    font-family: var(--font-display);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 0.9;
+    text-transform: uppercase;
+    overflow-wrap: normal;
+    word-break: normal;
+    hyphens: auto;
+    text-wrap: balance;
+  }
+  .type-outline {
+    color: transparent;
+    -webkit-text-stroke: 1px rgb(var(--fg));
+  }
+
+  /* Volumetric crimson rim light for Act II (fixed, above canvas, below content). */
+  .atmosphere {
+    opacity: var(--atmos);
+    transition: opacity 1.1s cubic-bezier(0.7, 0, 0.2, 1);
+    background: radial-gradient(60% 50% at 100% 0%, rgb(255 42 42 / 0.18), transparent 70%),
+      radial-gradient(50% 60% at 0% 100%, rgb(153 0 0 / 0.22), transparent 70%),
+      radial-gradient(120% 80% at 50% 50%, transparent 55%, rgb(0 0 0 / 0.65) 100%);
+  }
+
+  .grain {
+    opacity: 0.04;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Cursor */
+  .cursor-reticle {
+    position: relative;
+    border: 1px solid rgb(var(--fg) / 0.85);
+    border-radius: 9999px;
+  }
+  .cursor-tick {
+    position: absolute;
+    background: rgb(var(--fg));
+  }
+  .cursor-lens {
+    border-color: rgb(255 255 255 / 0.55);
+    background: radial-gradient(circle at 30% 25%, rgb(255 255 255 / 0.35), transparent 40%),
+      radial-gradient(circle at 70% 80%, rgb(255 42 42 / 0.18), transparent 50%);
+    backdrop-filter: blur(1.5px) saturate(1.9) contrast(1.15) brightness(1.08);
+    -webkit-backdrop-filter: blur(1.5px) saturate(1.9) contrast(1.15) brightness(1.08);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.25), inset -6px -10px 18px rgb(0 0 0 / 0.25),
+      inset 6px 8px 16px rgb(255 255 255 / 0.3), 0 12px 30px -10px rgb(0 0 0 / 0.5);
+  }
+
+  /* Spotlight card + rotating border beam */
+  .spotlight-glow {
+    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgb(255 42 42 / 0.16), transparent 60%);
+  }
+  .border-beam::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: conic-gradient(from var(--beam-angle), transparent 0deg, transparent 300deg, #ff2a2a 345deg, transparent 360deg);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: beam-spin 5s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes beam-spin {
+    to {
+      --beam-angle: 360deg;
+    }
+  }
+
+  /* Mechanical keycap */
+  .keycap {
+    @apply inline-flex select-none font-mono text-[11px] font-bold uppercase tracking-[0.12em];
+    padding: 3px 3px 7px;
+    border-radius: 7px;
+    background: linear-gradient(180deg, #d4d7de 0%, #9aa1ad 100%);
+    box-shadow: 0 1px 0 rgb(255 255 255 / 0.7) inset, 0 6px 10px -4px rgb(0 0 0 / 0.45), 0 0 0 1px rgb(5 5 7 / 0.35);
+    transition: transform 0.12s ease, padding 0.12s ease;
+    color: #050507;
+  }
+  .keycap-top {
+    @apply inline-flex items-center gap-2 px-3 py-2;
+    border-radius: 5px;
+    background: linear-gradient(160deg, #f4f5f7 0%, #d5d9e0 100%);
+    box-shadow: 0 1px 0 rgb(255 255 255 / 0.9) inset, 0 -1px 0 rgb(0 0 0 / 0.08) inset;
+  }
+  .keycap:hover {
+    transform: translateY(2px);
+    padding-bottom: 4px;
+  }
+  :root[data-act='dark'] .keycap {
+    background: linear-gradient(180deg, #1b1b20 0%, #050507 100%);
+    box-shadow: 0 1px 0 rgb(255 255 255 / 0.08) inset, 0 6px 14px -4px rgb(0 0 0 / 0.9), 0 0 0 1px rgb(255 255 255 / 0.1);
+    color: #e2e4e9;
+  }
+  :root[data-act='dark'] .keycap-top {
+    background: linear-gradient(160deg, #2a2a31 0%, #121216 100%);
+    box-shadow: 0 1px 0 rgb(255 255 255 / 0.1) inset;
+  }
+  .keycap-accent,
+  :root[data-act='dark'] .keycap-accent {
+    background: linear-gradient(180deg, #ff2a2a 0%, #990000 100%);
+    color: #050507;
+  }
+  .keycap-accent .keycap-top,
+  :root[data-act='dark'] .keycap-accent .keycap-top {
+    background: linear-gradient(160deg, #ff6a6a 0%, #ff2a2a 100%);
+  }
+
+  /* Chrome text (used sparingly on numerals) */
+  .chrome-text {
+    background: linear-gradient(180deg, #ffffff 0%, #9aa1ad 38%, #2b2f36 52%, #e2e4e9 62%, #6b7280 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  :root[data-act='dark'] .chrome-text {
+    background: linear-gradient(180deg, #ffffff 0%, #8b8b96 40%, #1a0000 52%, #ff2a2a 64%, #3a0000 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  .hairline {
+    @apply border-line/20;
+  }
+
+  .field {
+    @apply w-full border-0 border-b border-line/30 bg-transparent px-0 py-3 font-mono text-sm text-fg placeholder:text-muted/60 focus:border-crimson focus:outline-none focus:ring-0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
