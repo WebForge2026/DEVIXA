@@ -62,7 +62,7 @@ export const Journey = ({ journey }: { journey: Dictionary['journey'] }) => {
         <div className="mx-auto flex w-full max-w-[1600px] flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <SectionLabel index="01">{journey.label}</SectionLabel>
-            <h2 id="journey-title" className="type-display mt-5 max-w-[18ch] text-[clamp(1.8rem,3.6vw,3.6rem)]">
+            <h2 id="journey-title" className="type-display mt-5 max-w-[18ch] text-[clamp(1.8rem,3.6vw,3.6rem)] lg:text-[clamp(1.6rem,min(3.6vw,6vh),3.6rem)]">
               {journey.title}
             </h2>
           </div>
@@ -70,7 +70,7 @@ export const Journey = ({ journey }: { journey: Dictionary['journey'] }) => {
         </div>
 
         {/* Pipeline rail */}
-        <div className="mx-auto mt-8 hidden w-full max-w-[1600px] lg:block" aria-hidden>
+        <div className="mx-auto mt-[clamp(0.75rem,2.5vh,2rem)] hidden w-full max-w-[1600px] lg:block" aria-hidden>
           <div className="relative h-px bg-line/20">
             <div ref={bar} className="absolute inset-0 origin-left scale-x-0 bg-crimson shadow-[0_0_12px_#FF2A2A]" />
           </div>
@@ -84,7 +84,7 @@ export const Journey = ({ journey }: { journey: Dictionary['journey'] }) => {
           </div>
         </div>
 
-        <div ref={track} className="mt-10 flex flex-col gap-6 pb-16 lg:mt-8 lg:flex-1 lg:flex-row lg:gap-0 lg:pb-10 lg:pl-[max(2rem,calc((100vw-1600px)/2))]">
+        <div ref={track} className="mt-10 flex flex-col gap-6 pb-16 lg:mt-[clamp(1rem,3vh,2rem)] lg:min-h-0 lg:flex-1 lg:flex-row lg:gap-0 lg:pb-[clamp(1rem,4vh,2.5rem)] lg:pl-[max(2rem,calc((100vw-1600px)/2))]">
           {journey.steps.map((step, i) => {
             const Icon = ICONS[i] ?? Globe;
             const on = i === active;
@@ -93,13 +93,13 @@ export const Journey = ({ journey }: { journey: Dictionary['journey'] }) => {
                 key={step.title}
                 data-step
                 className={cn(
-                  'relative flex shrink-0 flex-col justify-between border border-line/20 bg-panel/70 p-6 backdrop-blur-md transition-[border-color,box-shadow] duration-500 md:p-10 lg:mr-6 lg:h-full lg:w-[min(72vw,980px)]',
+                  'relative flex shrink-0 flex-col justify-between border border-line/20 bg-panel/70 p-6 backdrop-blur-md transition-[border-color,box-shadow] duration-500 md:p-10 lg:mr-6 lg:min-h-0 lg:w-[min(72vw,980px)] lg:p-[clamp(1.5rem,4.5vh,2.5rem)]',
                   on && 'border-crimson/70 shadow-[0_0_80px_-30px_#FF2A2A]',
                 )}
                 data-cursor="lens"
               >
                 <header className="flex items-start justify-between gap-6">
-                  <span className="chrome-text type-display text-[clamp(4.5rem,11vw,11rem)] leading-[0.8]">0{i + 1}</span>
+                  <span className="chrome-text type-display text-[clamp(4.5rem,11vw,11rem)] leading-[0.8] lg:text-[clamp(3.25rem,min(11vw,15vh),11rem)]">0{i + 1}</span>
                   <div className="flex flex-col items-end gap-3 font-mono text-[10px] uppercase tracking-[0.25em] text-fg/60">
                     <span className="flex items-center gap-2">
                       <span className={cn('h-1.5 w-1.5 rounded-full', on ? 'animate-blink bg-crimson shadow-[0_0_8px_#FF2A2A]' : 'bg-fg/30')} />
@@ -111,7 +111,7 @@ export const Journey = ({ journey }: { journey: Dictionary['journey'] }) => {
                   </div>
                 </header>
                 {/* Stage meter: capacity lights up as the system grows */}
-                <div aria-hidden className="mt-10 hidden flex-1 flex-col justify-center gap-4 lg:flex">
+                <div aria-hidden className="mt-[clamp(1rem,3vh,2.5rem)] hidden min-h-0 flex-1 flex-col justify-center gap-4 lg:flex lg:[@media(max-height:820px)]:hidden">
                   <div className="grid grid-cols-5 gap-2">
                     {journey.steps.map((_, s) => (
                       <span key={s} className={cn('h-10 border transition-colors duration-500', s <= i ? 'border-crimson bg-crimson/80 shadow-[0_0_24px_-6px_#FF2A2A]' : 'border-line/20')} />
@@ -122,12 +122,12 @@ export const Journey = ({ journey }: { journey: Dictionary['journey'] }) => {
                     <span>{(i + 1) * 20}%</span>
                   </div>
                 </div>
-                <div className="mt-10 grid gap-6 md:grid-cols-[1.1fr_1fr] md:items-end">
+                <div className="mt-10 grid gap-6 md:grid-cols-[1.1fr_1fr] md:items-end lg:mt-[clamp(1rem,3vh,2.5rem)] lg:pb-1 lg:[@media(max-height:820px)]:mt-auto">
                   <div>
                     <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-crimson">{step.tag}</p>
-                    <h3 className="type-display mt-3 text-[clamp(1.6rem,3.2vw,3.25rem)]">{step.title}</h3>
+                    <h3 className="type-display mt-3 text-[clamp(1.6rem,3.2vw,3.25rem)] lg:text-[clamp(1.4rem,min(3.2vw,5.5vh),3.25rem)]">{step.title}</h3>
                   </div>
-                  <p className="text-base leading-relaxed text-fg/80 md:text-lg">{step.body}</p>
+                  <p className="text-base leading-relaxed text-fg/80 md:text-lg lg:[@media(max-height:820px)]:text-base">{step.body}</p>
                 </div>
                 {/* Connector to next stage */}
                 {i < journey.steps.length - 1 ? (
