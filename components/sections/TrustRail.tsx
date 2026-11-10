@@ -19,10 +19,8 @@ export const TrustRail = ({ trust }: { trust: Dictionary['trust'] }) => (
           return (
             <div key={item} data-reveal className="group relative flex min-h-[220px] flex-col justify-between border-b border-r border-line/30 bg-bg/50 p-5 backdrop-blur-sm transition-colors duration-300 hover:bg-fg hover:text-bg">
               <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.25em]">
-                <span>G-0{i + 1}</span>
-                <span className="flex items-center gap-1.5">
-                  <span className="h-1.5 w-1.5 rounded-full bg-crimson shadow-[0_0_8px_#FF2A2A]" /> ON
-                </span>
+                <span>0{i + 1}</span>
+                <span className="h-1.5 w-1.5 rounded-full bg-crimson shadow-[0_0_8px_#FF2A2A]" />
               </div>
               <Icon size={28} strokeWidth={1.25} className="my-6 text-crimson" />
               <p className="text-[15px] font-medium leading-snug">{item}</p>

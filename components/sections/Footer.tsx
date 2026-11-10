@@ -3,6 +3,7 @@ import { LanyardMount } from '@/components/canvas/LanyardMount';
 import type { Locale } from '@/lib/i18n/config';
 import type { Dictionary } from '@/lib/i18n/types';
 import { site } from '@/lib/site';
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 import { StarGlyph } from '@/components/ui/Wordmark';
 
 export const Footer = ({ locale, footer, nav }: { locale: Locale; footer: Dictionary['footer']; nav: Dictionary['nav'] }) => (
@@ -17,7 +18,7 @@ export const Footer = ({ locale, footer, nav }: { locale: Locale; footer: Dictio
       </p>
     </div>
 
-    <div className="pointer-events-none relative mx-auto flex min-h-[100svh] max-w-[1600px] flex-col justify-end px-4 pb-8 pt-[62vh] md:px-8 lg:pt-32">
+    <div className="relative mx-auto flex min-h-[100svh] pointer-events-none [&_a]:pointer-events-auto max-w-[1600px] flex-col justify-end px-4 pb-8 pt-[62vh] md:px-8 lg:pt-32">
       <div className="pointer-events-auto grid gap-10 lg:w-1/2">
         <p className="max-w-md text-xl leading-snug">{footer.tagline}</p>
         <div className="grid grid-cols-2 gap-8 font-mono text-[11px] uppercase tracking-[0.2em] sm:grid-cols-3">
@@ -52,6 +53,9 @@ export const Footer = ({ locale, footer, nav }: { locale: Locale; footer: Dictio
       <div className="mt-16 flex items-end gap-3 lg:gap-6">
         <StarGlyph className="mb-[1vw] h-[6vw] w-[6vw] shrink-0 text-crimson" />
         <p aria-hidden className="type-display text-[14vw] leading-[0.8] text-[#EEEEF2]">Devixa</p>
+      </div>
+      <div className="mt-8 font-mono text-[11px] uppercase tracking-[0.2em]">
+        <LanguageSwitcher locale={locale} label={footer.language} />
       </div>
       <div className="mt-6 flex flex-col justify-between gap-2 border-t border-white/15 pt-4 font-mono text-[10px] uppercase tracking-[0.2em] text-[#EEEEF2]/50 sm:flex-row">
         <span>© {new Date().getFullYear()} {site.legalEntity} · {site.location}</span>

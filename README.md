@@ -8,7 +8,7 @@ Next.js 14 App Router · TypeScript · Tailwind · React Three Fiber + Rapier ·
 ```bash
 npm install
 cp .env.example .env.local   # add Supabase URL + anon key
-npm run dev                  # http://localhost:3000 → redirects to /en, /de or /bg
+npm run dev                  # http://localhost:3000 → /de (or the saved / browser language)
 npm run build && npm start
 ```
 
@@ -49,10 +49,18 @@ lib/
 supabase/schema.sql         tables, constraints, RLS: anon INSERT only, reads for service_role
 ```
 
+## Before going live
+
+1. Fill in the `null` fields in `lib/legal.ts` (address, managing director, ЕИК, VAT ID, hosting provider).
+   Until then the imprint and privacy policy show red placeholders.
+2. Add the Supabase keys and run `supabase/schema.sql`.
+3. Have the imprint and privacy policy reviewed by a lawyer.
+
 ## Notes
 
-- Copy lives in `lib/i18n/dictionaries/*.ts`. Contacts live in `lib/site.ts`.
-- Configurator ranges in `lib/estimate.ts` are placeholders. Set them to your real rates.
+- Languages: German (default), English, Bulgarian. Order: saved choice (`NEXT_LOCALE` cookie) → browser language → German.
+- Copy lives in `lib/i18n/dictionaries/*.ts`, articles in `lib/i18n/articles/`, legal texts in `lib/i18n/legal/`. Contacts live in `lib/site.ts`.
+- Cost calculator (`lib/estimate.ts`): German agency reference prices × `DEVIXA_FACTOR` (0.7 = 30 % below the German market). The UI shows both.
 - Respects `prefers-reduced-motion` (no smooth scroll, no pinning, no physics impulses) and falls back to the CSS atmosphere when WebGL is unavailable.
 - Forms are rate-limited to 5 submissions per IP per 10 minutes, per server instance. On multi-instance hosting, use a shared limiter instead.
 - The 3D layers sit behind an error boundary: if WebGL fails, the page keeps working.

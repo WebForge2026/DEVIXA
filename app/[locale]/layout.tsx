@@ -52,7 +52,7 @@ export const generateMetadata = ({ params }: { params: { locale: string } }): Me
     description: dict.meta.description,
     alternates: {
       canonical: `/${params.locale}`,
-      languages: Object.fromEntries(locales.map((l) => [htmlLang[l], `/${l}`])),
+      languages: { ...Object.fromEntries(locales.map((l) => [htmlLang[l], `/${l}`])), 'x-default': '/de' },
     },
     openGraph: {
       type: 'website',
@@ -94,6 +94,7 @@ const RootLayout = ({ children, params }: { children: ReactNode; params: { local
           <PointerBridge />
           <SceneMount />
           <div aria-hidden className="atmosphere pointer-events-none fixed inset-0 z-[1]" />
+          <div aria-hidden className="veil pointer-events-none fixed inset-0 z-[2]" />
           <div id="act-wipe" aria-hidden className="pointer-events-none invisible fixed inset-x-0 top-0 z-[95] h-screen">
             <div className="absolute inset-x-0 bottom-0 h-px bg-crimson shadow-[0_0_30px_6px_#FF2A2A]" />
             <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-crimson/25 to-transparent" />

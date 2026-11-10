@@ -57,7 +57,7 @@ const ArticlePage = ({ params }: { params: Params }) => {
 
   return (
     <>
-      <ActController initial="dark" />
+      <ActController initial="dark" veil />
       <main id="main" className="px-4 pb-10 pt-28 md:px-8">
         <article className="mx-auto max-w-[1600px]">
           <Link href={`/${locale}#insights`} className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.22em] text-fg/60 hover:text-crimson">

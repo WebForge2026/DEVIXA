@@ -77,11 +77,14 @@ export type Dictionary = {
     timeline: string;
     timelines: { id: string; label: string }[];
     result: string;
+    market: string;
+    vat: string;
     disclaimer: string;
     email: string;
     submit: string;
     success: string;
   };
+  process: { label: string; title: string; intro: string; steps: { title: string; body: string }[] };
   insights: { label: string; title: string; read: string; minutes: string; back: string; takeaway: string; more: string };
   contact: {
     label: string;
@@ -113,7 +116,6 @@ export type Dictionary = {
     imprint: string;
     privacy: string;
     rights: string;
+    language: string;
   };
-  imprint: { title: string; body: string[] };
-  privacy: { title: string; body: string[] };
 };

@@ -5,7 +5,7 @@ export const site = {
   markets: ['DE', 'BG', 'PL', 'INTL'] as const,
   url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://devixa.de',
   contact: {
-    support: 'support@devix.de',
+    support: 'support@devixa.de',
     office: 'office@devixa.de',
     phoneDE: { display: '+49 151 29569444', href: 'tel:+4915129569444' },
     phoneBG: { display: '+359 895 780 379', href: 'tel:+359895780379' },

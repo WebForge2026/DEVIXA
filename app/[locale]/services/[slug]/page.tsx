@@ -49,7 +49,7 @@ const ServicePage = ({ params }: { params: Params }) => {
 
   return (
     <>
-      <ActController initial="dark" />
+      <ActController initial="dark" veil />
       <main id="main" className="px-4 pb-28 pt-28 md:px-8">
         <div className="mx-auto max-w-[1600px]">
           <Link href={`/${locale as Locale}#services`} className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.22em] text-fg/60 hover:text-crimson">
@@ -58,7 +58,7 @@ const ServicePage = ({ params }: { params: Params }) => {
 
           <header className="mt-10 grid gap-10 border-b border-line/15 pb-16 lg:grid-cols-12">
             <div className="lg:col-span-8">
-              <SectionLabel index={`MOD-0${index + 1}`}>{service.category}</SectionLabel>
+              <SectionLabel index={`0${index + 1}`}>{service.category}</SectionLabel>
               <h1 className="type-display mt-6 text-[clamp(1.7rem,4vw,4.5rem)]">{service.headline}</h1>
             </div>
             <div className="flex flex-col justify-end gap-8 lg:col-span-4">
@@ -75,12 +75,7 @@ const ServicePage = ({ params }: { params: Params }) => {
             <Reveal className="mt-8 grid gap-px border border-line/15 bg-line/15 md:grid-cols-3">
               {service.pains.map((pain, i) => (
                 <div key={pain.title} data-reveal className="relative bg-panel p-8">
-                  <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.25em] text-fg/50">
-                    <span>ERR-0{i + 1}</span>
-                    <span className="flex items-center gap-1.5 text-crimson">
-                      <span className="h-1.5 w-1.5 animate-blink rounded-full bg-crimson shadow-[0_0_8px_#FF2A2A]" /> FAULT
-                    </span>
-                  </div>
+                  <span className="font-mono text-[11px] tracking-[0.2em] text-fg/50">0{i + 1}</span>
                   <AlertTriangle size={30} strokeWidth={1.25} className="mt-8 text-crimson" />
                   <h3 className="mt-6 text-2xl font-semibold tracking-tight">{pain.title}</h3>
                   <p className="mt-3 text-fg/70">{pain.body}</p>

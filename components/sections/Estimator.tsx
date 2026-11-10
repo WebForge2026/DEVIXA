@@ -4,7 +4,7 @@ import { Check } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 import { submitEstimate, type ActionState } from '@/app/actions/leads';
-import { estimateRange, formatEuro, type FeatureId, type SystemType, type TimelineId } from '@/lib/estimate';
+import { estimateRange, formatEuro, marketRange, type FeatureId, type SystemType, type TimelineId } from '@/lib/estimate';
 import type { Dictionary } from '@/lib/i18n/types';
 import { cn } from '@/lib/utils';
 import { MagneticButton } from '@/components/ui/MagneticButton';
@@ -29,6 +29,7 @@ export const Estimator = ({ estimator, contact, intlLocale }: EstimatorProps) =>
   const [state, action] = useFormState<ActionState, FormData>(submitEstimate, { status: 'idle' });
 
   const range = useMemo(() => estimateRange(system, features, timeline), [system, features, timeline]);
+  const market = useMemo(() => marketRange(system, features, timeline), [system, features, timeline]);
   const toggle = (id: FeatureId) => setFeatures((list) => (list.includes(id) ? list.filter((f) => f !== id) : [...list, id]));
 
   const chip = (on: boolean) =>
@@ -40,7 +41,7 @@ export const Estimator = ({ estimator, contact, intlLocale }: EstimatorProps) =>
   return (
     <section id="estimate" aria-labelledby="estimate-title" className="relative px-4 py-28 md:px-8">
       <div className="mx-auto max-w-[1600px]">
-        <SectionLabel index="04">{estimator.label}</SectionLabel>
+        <SectionLabel index="05">{estimator.label}</SectionLabel>
         <h2 id="estimate-title" className="type-display mt-5 text-[clamp(1.8rem,4vw,4rem)]">
           {estimator.title}
         </h2>
@@ -95,6 +96,13 @@ export const Estimator = ({ estimator, contact, intlLocale }: EstimatorProps) =>
                 {formatEuro(range.low, intlLocale)}
                 <span className="block text-crimson">— {formatEuro(range.high, intlLocale)}</span>
               </p>
+              <p className="mt-5 flex flex-wrap items-baseline gap-x-3 font-mono text-[11px] uppercase tracking-[0.15em] text-[#EEEEF2]/50">
+                <span>{estimator.market}:</span>
+                <span className="tabular-nums line-through decoration-crimson decoration-2">
+                  {formatEuro(market.low, intlLocale)} – {formatEuro(market.high, intlLocale)}
+                </span>
+              </p>
+              <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.15em] text-[#EEEEF2]/40">{estimator.vat}</p>
               <p className="mt-4 max-w-sm text-sm text-[#EEEEF2]/60">{estimator.disclaimer}</p>
             </div>
 

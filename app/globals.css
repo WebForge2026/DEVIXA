@@ -112,6 +112,15 @@
       radial-gradient(120% 80% at 50% 50%, transparent 55%, rgb(0 0 0 / 0.65) 100%);
   }
 
+  .veil {
+    background: rgb(var(--bg));
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+  :root[data-veil='on'] .veil {
+    opacity: 0.82;
+  }
+
   .grain {
     opacity: 0.04;
     mix-blend-mode: overlay;

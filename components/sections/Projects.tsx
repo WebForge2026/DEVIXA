@@ -20,9 +20,9 @@ export const Projects = ({ projects }: { projects: Dictionary['projects'] }) => 
             <SpotlightCard className="grid gap-8 p-6 md:p-10 lg:grid-cols-12">
               <div className="lg:col-span-5">
                 <div className="flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.25em] text-fg/60">
-                  <span>DEP-{String(i + 1).padStart(3, '0')}</span>
+                  <span>{String(i + 1).padStart(2, '0')}</span>
                   <span className="flex items-center gap-1.5 text-crimson">
-                    <span className="h-1.5 w-1.5 animate-blink rounded-full bg-crimson shadow-[0_0_8px_#FF2A2A]" /> PROD
+                    <span className="h-1.5 w-1.5 animate-blink rounded-full bg-crimson shadow-[0_0_8px_#FF2A2A]" /> Live
                   </span>
                   <span className="hidden sm:inline">{project.sector}</span>
                 </div>

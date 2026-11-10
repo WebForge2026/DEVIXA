@@ -41,7 +41,7 @@ export const Hero = ({ hero }: { hero: Dictionary['hero'] }) => {
         <p data-fade className="hidden text-right md:block">
           N 42.6977° / E 23.3219°
           <br />
-          SYS.STATUS — <span className="text-crimson">OPERATIONAL</span>
+          Sofia · <span className="text-crimson">EU / GDPR</span>
         </p>
       </div>
 
@@ -83,9 +83,7 @@ export const Hero = ({ hero }: { hero: Dictionary['hero'] }) => {
         <span data-fade className="flex items-center gap-2">
           <ArrowDownRight size={14} className="text-crimson" /> {hero.scroll}
         </span>
-        <span data-fade className="hidden items-center gap-2 md:flex">
-          <span className="h-2 w-2 rotate-45 border border-crimson" /> {hero.coreHint}
-        </span>
+        <span data-fade className="hidden md:inline">Creative Solutions 88 EOOD · EU</span>
       </div>
     </section>
   );

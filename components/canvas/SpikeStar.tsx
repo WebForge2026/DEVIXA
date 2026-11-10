@@ -72,7 +72,9 @@ export const SpikeStar = () => {
     target.copy(restPosition).lerp(darkroomPosition, motion.hero);
     target.y += Math.sin(state.clock.elapsedTime * 0.8) * 0.06;
     root.current.position.lerp(target, 1 - Math.exp(-6 * delta));
-    root.current.scale.setScalar(scale * (1 + motion.hero * 0.35 + motion.flare * 0.08));
+    const presence = 1 - THREE.MathUtils.smoothstep(motion.hero, 0.35, 0.9);
+    root.current.visible = presence > 0.01;
+    root.current.scale.setScalar(scale * presence * (1 + motion.flare * 0.08));
 
     // Parallax tilt toward the cursor
     root.current.rotation.x = damp(root.current.rotation.x, 0.28 - motion.pointer.y * 0.25, 4, delta);

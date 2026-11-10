@@ -15,7 +15,7 @@ type InsightsProps = {
   heading?: string;
 };
 
-export const Insights = ({ locale, insights, articles, index = '05', heading = insights.title }: InsightsProps) => (
+export const Insights = ({ locale, insights, articles, index = '06', heading = insights.title }: InsightsProps) => (
   <section id="insights" aria-labelledby="insights-title" className="relative px-4 py-28 md:px-8">
     <div className="mx-auto max-w-[1600px]">
       <SectionLabel index={index}>{insights.label}</SectionLabel>

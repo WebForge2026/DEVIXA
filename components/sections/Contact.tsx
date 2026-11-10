@@ -38,7 +38,7 @@ export const Contact = ({ locale, contact }: { locale: Locale; contact: Dictiona
     <section id="contact" aria-labelledby="contact-title" className="relative px-4 py-28 md:px-8">
       <div className="mx-auto grid max-w-[1600px] gap-12 lg:grid-cols-12">
         <div className="lg:col-span-5">
-          <SectionLabel index="06">{contact.label}</SectionLabel>
+          <SectionLabel index="07">{contact.label}</SectionLabel>
           <h2 id="contact-title" className="type-display mt-5 text-[clamp(2rem,4.6vw,4.5rem)]">
             {contact.title}
           </h2>

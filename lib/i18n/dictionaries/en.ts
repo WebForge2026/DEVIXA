@@ -9,8 +9,8 @@ export const en: Dictionary = {
   nav: {
     services: 'Services',
     journey: 'Growth path',
-    work: 'Deployments',
-    estimate: 'Configurator',
+    work: 'Projects',
+    estimate: 'Cost calculator',
     insights: 'Insights',
     contact: 'Contact',
     cta: 'Start a project',
@@ -20,12 +20,12 @@ export const en: Dictionary = {
     headline: ['We craft', 'systems you', 'can feel.'],
     sub: 'Digital solutions for ambitious businesses: Websites, webshops, and business systems — built for your operations.',
     ctaPrimary: 'Start a project',
-    ctaSecondary: 'Configure your system',
-    scroll: 'Scroll to enter the darkroom',
+    ctaSecondary: 'Calculate costs',
+    scroll: 'Scroll to explore',
     coreHint: 'Click the core',
   },
   trust: {
-    label: 'Operating guarantees',
+    label: 'Our commitments',
     items: [
       'Written fixed-price quote before project start',
       'Weekly updates with sandboxed preview environments',
@@ -35,7 +35,7 @@ export const en: Dictionary = {
     ],
   },
   journey: {
-    label: 'Growth pipeline',
+    label: 'Growth path',
     title: 'Five stages. One system that grows with you.',
     intro: 'Start where you are. Every stage plugs into the next — no rebuilds, no dead ends.',
     steps: [
@@ -67,10 +67,10 @@ export const en: Dictionary = {
     ],
   },
   services: {
-    label: 'Service modules',
+    label: 'Services',
     title: 'Built for your operations, not for a template.',
-    intro: 'Three modules. Each one engineered, documented and handed over with a fixed scope.',
-    open: 'Open module',
+    intro: 'Three service areas. Each project is engineered, documented and delivered with a fixed scope.',
+    open: 'Learn more',
     items: [
       {
         slug: 'web-systems',
@@ -85,8 +85,8 @@ export const en: Dictionary = {
             body: 'Enquiries land in inboxes, orders in spreadsheets, arrangements in heads.',
           },
           {
-            title: 'Media breaks',
-            body: 'Data is entered multiple times (Excel → system → invoice), creating errors.',
+            title: 'Broken data flow',
+            body: 'Data is entered multiple times (Excel → system → invoice), which creates errors.',
           },
           {
             title: 'Standard software does not fit',
@@ -112,7 +112,7 @@ export const en: Dictionary = {
         slug: 'automation-integration',
         name: 'AI Automation & Integration',
         category: 'Digitize processes',
-        headline: 'AI automation for business processes — systematic, not hype',
+        headline: 'AI automation for business processes — systematic, not hype-driven',
         subheadline:
           'Automation for us means: your systems exchange data themselves, reports generate themselves, routine disappears.',
         pains: [
@@ -176,8 +176,8 @@ export const en: Dictionary = {
     ],
   },
   servicePage: {
-    back: 'All modules',
-    pains: 'Fault indicators',
+    back: 'All services',
+    pains: 'Typical problems',
     approach: 'Approach',
     included: "What's included",
     stack: 'Tech stack',
@@ -188,8 +188,8 @@ export const en: Dictionary = {
     ctaBody: 'Tell us about your process. You get a written, fixed-price quote before anything starts.',
   },
   projects: {
-    label: 'Verified production deployments',
-    title: 'Running in production. Right now.',
+    label: 'Selected projects',
+    title: 'Live in production — today.',
     fields: { client: 'Client', task: 'Task', solution: 'Solution', tech: 'Tech', live: 'Live system' },
     items: [
       {
@@ -205,7 +205,7 @@ export const en: Dictionary = {
         name: 'Modelo MES',
         sector: 'Industrial manufacturing',
         client: 'Manufacturing & industrial production facility.',
-        task: 'Order acceptance and production tracking without end-to-end data breaks.',
+        task: 'Order acceptance and production tracking with a continuous data flow and no media breaks.',
         solution: 'Web-based MES system for recording and tracking factory production orders.',
         tech: ['Node.js', 'React', 'MongoDB'],
       },
@@ -221,7 +221,7 @@ export const en: Dictionary = {
     ],
   },
   estimator: {
-    label: 'System configurator',
+    label: 'Cost calculator',
     title: 'Configure your system.',
     intro: 'Pick the components. Get an indicative range in seconds — and a written fixed-price quote after a short call.',
     systemType: 'System type',
@@ -249,19 +249,31 @@ export const en: Dictionary = {
       { id: 'standard', label: 'Standard' },
       { id: 'priority', label: 'Priority' },
     ],
-    result: 'Indicative range',
-    disclaimer: 'Non-binding estimate. Your final price is fixed in a written quote before the project starts.',
+    result: 'Indicative price range',
+    market: 'Typical German agency price', vat: 'Net prices, excl. VAT',
+    disclaimer: 'Around 30% below typical German agency rates. Non-binding estimate — your final price is fixed in a written quote before the project starts.',
     email: 'Send this configuration to',
     submit: 'Request fixed quote',
     success: 'Configuration received. We will reply with a written quote.',
   },
+  process: {
+    label: 'How we work',
+    title: 'Clear steps. No surprises.',
+    intro: 'Every project follows the same transparent process — from the first call to long-term support.',
+    steps: [
+      { title: 'Initial consultation', body: 'We listen first: your processes, goals and constraints. You leave the call with a clear picture of what makes sense.' },
+      { title: 'Written fixed-price quote', body: 'Scope, timeline and price — in writing, before any work starts. No hourly surprises.' },
+      { title: 'Build with weekly updates', body: 'You see progress every week in your own preview environment and can give feedback at any time.' },
+      { title: 'Go-live and support', body: 'We launch together, train your team and stay on as your technology partner for maintenance and further development.' },
+    ],
+  },
   insights: {
-    label: 'Field notes',
+    label: 'Knowledge',
     title: 'Insights',
     read: 'Read article', minutes: 'min read', back: 'All insights', takeaway: 'Takeaway', more: 'More insights',
   },
   contact: {
-    label: 'Open a channel',
+    label: 'Contact',
     title: 'Tell us what has to work.',
     intro: 'Describe your process or project. We respond within one working day.',
     fields: {
@@ -283,9 +295,9 @@ export const en: Dictionary = {
       'Not sure yet',
     ],
     budgets: ['< €5k', '€5k – €15k', '€15k – €40k', '€40k +', 'Not sure yet'],
-    submit: 'Transmit enquiry',
-    sending: 'Transmitting…',
-    success: 'Transmission received. We will be in touch within one working day.',
+    submit: 'Send enquiry',
+    sending: 'Sending…',
+    success: 'Thank you — your enquiry has been received. We will get back to you within one working day.',
     errorGeneric: 'Something went wrong. Please try again or email us directly.',
     errorConfig: 'The form is not connected yet. Please email us directly.',
   },
@@ -297,22 +309,6 @@ export const en: Dictionary = {
     imprint: 'Imprint',
     privacy: 'Privacy',
     rights: 'All rights reserved.',
-  },
-  imprint: {
-    title: 'Imprint',
-    body: [
-      'Devixa is a brand of Creative Solutions 88 EOOD, registered in Bulgaria (EU).',
-      'Contact: office@devixa.de · support@devix.de',
-      'Phone DE: +49 151 29569444 · Phone BG: +359 895 780 379',
-    ],
-  },
-  privacy: {
-    title: 'Privacy',
-    body: [
-      'Controller: Creative Solutions 88 EOOD, Bulgaria (EU). Contact: office@devixa.de.',
-      'When you submit the contact form or the system configurator, we store the data you enter (name, email, company, project details) to answer your enquiry. Legal basis: Art. 6(1)(b) GDPR (pre-contractual measures).',
-      'Data is stored on servers inside the European Union and is not shared with third parties for marketing purposes.',
-      'You can request access, correction or deletion of your data at any time by writing to office@devixa.de.',
-    ],
+    language: 'Language',
   },
 };

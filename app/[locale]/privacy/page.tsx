@@ -2,29 +2,31 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { ActController } from '@/components/providers/ActController';
 import { Footer } from '@/components/sections/Footer';
-import { isLocale } from '@/lib/i18n/config';
+import { LegalPage } from '@/components/sections/LegalPage';
 import { getDictionary } from '@/lib/i18n';
+import { htmlLang, isLocale, locales } from '@/lib/i18n/config';
+import { getLegal } from '@/lib/i18n/legal';
 
 export const generateMetadata = ({ params }: { params: { locale: string } }): Metadata =>
-  isLocale(params.locale) ? { title: getDictionary(params.locale).privacy.title, robots: { index: false } } : {};
+  isLocale(params.locale)
+    ? {
+        title: getLegal(params.locale).privacy.title,
+        alternates: {
+          canonical: `/${params.locale}/privacy`,
+          languages: Object.fromEntries(locales.map((l) => [htmlLang[l], `/${l}/privacy`])),
+        },
+      }
+    : {};
 
 const Page = ({ params }: { params: { locale: string } }) => {
   if (!isLocale(params.locale)) notFound();
   const dict = getDictionary(params.locale);
-  const content = dict.privacy;
 
   return (
     <>
-      <ActController initial="light" />
+      <ActController initial="light" veil />
       <main id="main" className="px-4 pb-28 pt-32 md:px-8">
-        <article className="mx-auto max-w-3xl">
-          <h1 className="type-display text-[clamp(2.4rem,6vw,5rem)]">{content.title}</h1>
-          <div className="mt-12 space-y-6 border-t border-line/20 pt-10 text-lg leading-relaxed">
-            {content.body.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
-          </div>
-        </article>
+        <LegalPage doc={getLegal(params.locale).privacy} />
       </main>
       <Footer locale={params.locale} footer={dict.footer} nav={dict.nav} />
     </>

@@ -5,6 +5,7 @@ import { Footer } from '@/components/sections/Footer';
 import { Hero } from '@/components/sections/Hero';
 import { Insights } from '@/components/sections/Insights';
 import { Journey } from '@/components/sections/Journey';
+import { Process } from '@/components/sections/Process';
 import { Projects } from '@/components/sections/Projects';
 import { Services } from '@/components/sections/Services';
 import { TrustRail } from '@/components/sections/TrustRail';
@@ -24,6 +25,7 @@ const HomePage = ({ params }: { params: { locale: Locale } }) => {
         <Journey journey={dict.journey} />
         <Services locale={params.locale} services={dict.services} />
         <Projects projects={dict.projects} />
+        <Process process={dict.process} />
         <Estimator estimator={dict.estimator} contact={dict.contact} intlLocale={htmlLang[params.locale]} />
         <Insights locale={params.locale} insights={dict.insights} articles={getArticles(params.locale)} />
         <Contact locale={params.locale} contact={dict.contact} />

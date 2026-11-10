@@ -10,7 +10,7 @@ export const de: Dictionary = {
     services: 'Leistungen',
     journey: 'Wachstumspfad',
     work: 'Projekte',
-    estimate: 'Konfigurator',
+    estimate: 'Kostenrechner',
     insights: 'Insights',
     contact: 'Kontakt',
     cta: 'Projekt starten',
@@ -20,22 +20,22 @@ export const de: Dictionary = {
     headline: ['Wir bauen', 'Systeme, die', 'man spürt.'],
     sub: 'Digitale Lösungen für ambitionierte Unternehmen: Websites, Webshops und Business-Systeme — gebaut für Ihre Abläufe.',
     ctaPrimary: 'Projekt starten',
-    ctaSecondary: 'System konfigurieren',
-    scroll: 'Scrollen, um die Dunkelkammer zu betreten',
+    ctaSecondary: 'Kosten berechnen',
+    scroll: 'Mehr entdecken',
     coreHint: 'Kern anklicken',
   },
   trust: {
     label: 'Unsere Zusagen',
     items: [
       'Schriftliches Festpreisangebot vor Projektstart',
-      'Wöchentliche Updates mit isolierten Vorschau-Umgebungen',
+      'Wöchentliche Updates mit eigener Vorschau-Umgebung',
       'Kunden in Deutschland, Bulgarien und Polen',
       '100 % EU-Datensouveränität, DSGVO-Konformität & dedizierte EU-Server',
-      'Langfristige Technologie-Partnerschaft & Störungs-SLA am selben Tag',
+      'Langfristige Technologiepartnerschaft & Reaktion auf Störungen am selben Werktag (SLA)',
     ],
   },
   journey: {
-    label: 'Wachstums-Pipeline',
+    label: 'Wachstumspfad',
     title: 'Fünf Stufen. Ein System, das mit Ihnen wächst.',
     intro: 'Starten Sie dort, wo Sie stehen. Jede Stufe greift in die nächste — ohne Neubau, ohne Sackgassen.',
     steps: [
@@ -67,10 +67,10 @@ export const de: Dictionary = {
     ],
   },
   services: {
-    label: 'Leistungsmodule',
+    label: 'Leistungen',
     title: 'Gebaut für Ihre Abläufe, nicht für ein Template.',
-    intro: 'Drei Module. Jedes entwickelt, dokumentiert und mit festem Umfang übergeben.',
-    open: 'Modul öffnen',
+    intro: 'Drei Leistungsbereiche. Jedes Projekt wird entwickelt, dokumentiert und mit festem Umfang übergeben.',
+    open: 'Mehr erfahren',
     items: [
       {
         slug: 'web-systems',
@@ -112,7 +112,7 @@ export const de: Dictionary = {
         slug: 'automation-integration',
         name: 'KI-Automatisierung & Integration',
         category: 'Prozesse digitalisieren',
-        headline: 'KI-Automatisierung für Geschäftsprozesse — systematisch, nicht Hype',
+        headline: 'KI-Automatisierung für Geschäftsprozesse — systematisch statt Hype',
         subheadline:
           'Automatisierung heißt für uns: Ihre Systeme tauschen Daten selbst aus, Berichte erstellen sich selbst, Routine verschwindet.',
         pains: [
@@ -149,7 +149,7 @@ export const de: Dictionary = {
           { title: 'Sicherheitsupdates stauen sich', body: 'Aufgeschobene Updates riskieren Angriffe und Ausfälle.' },
           { title: 'Kleine Änderungen dauern Wochen', body: 'Kleine Anpassungen werden zur Geduldsprobe.' },
         ],
-        approach: 'Kontinuierliche Verbesserungen im Alltag ohne Overhead — mit einem klaren Retainer-Modell.',
+        approach: 'Kontinuierliche Verbesserungen im laufenden Betrieb ohne Verwaltungsaufwand — mit einem klaren monatlichen Betreuungsmodell.',
         stack: ['WordPress', 'Laravel', 'React', 'Node.js', 'PHP'],
         included: [
           'Regelmäßige Updates und Sicherheitspatches',
@@ -176,8 +176,8 @@ export const de: Dictionary = {
     ],
   },
   servicePage: {
-    back: 'Alle Module',
-    pains: 'Störungsanzeigen',
+    back: 'Alle Leistungen',
+    pains: 'Typische Probleme',
     approach: 'Vorgehen',
     included: 'Leistungsumfang',
     stack: 'Tech-Stack',
@@ -188,13 +188,13 @@ export const de: Dictionary = {
     ctaBody: 'Beschreiben Sie Ihren Prozess. Sie erhalten ein schriftliches Festpreisangebot, bevor etwas startet.',
   },
   projects: {
-    label: 'Verifizierte Produktivsysteme',
-    title: 'Im Produktivbetrieb. Genau jetzt.',
+    label: 'Ausgewählte Projekte',
+    title: 'Im Produktivbetrieb — heute.',
     fields: { client: 'Kunde', task: 'Aufgabe', solution: 'Lösung', tech: 'Technik', live: 'Live-System' },
     items: [
       {
         name: 'Snow-School.bg',
-        sector: 'Tourismus / Alpine Buchung',
+        sector: 'Tourismus / Wintersport-Buchungen',
         client: 'Ski- und Snowboardschulen in bulgarischen Skigebieten.',
         task: 'Zentralisierung der Buchungen für Kurse und Ausrüstung über mehrere Skigebiete.',
         solution: 'Mandantenfähige Online-Buchungsplattform.',
@@ -204,8 +204,8 @@ export const de: Dictionary = {
       {
         name: 'Modelo MES',
         sector: 'Industrielle Fertigung',
-        client: 'Fertigungs- und Industrieproduktionsbetrieb.',
-        task: 'Auftragsannahme und Produktionsverfolgung ohne durchgängige Datenbrüche.',
+        client: 'Industrieller Fertigungsbetrieb.',
+        task: 'Auftragsannahme und Produktionsverfolgung mit durchgängigem Datenfluss — ohne Medienbrüche.',
         solution: 'Webbasiertes MES zur Erfassung und Verfolgung von Fertigungsaufträgen.',
         tech: ['Node.js', 'React', 'MongoDB'],
       },
@@ -213,7 +213,7 @@ export const de: Dictionary = {
         name: 'ManWalt',
         sector: 'Legal Tech / Kanzleiauftritt',
         client: 'Kanzlei ManWalt (München, Deutschland).',
-        task: 'Glaubwürdiger Unternehmensauftritt mit schlanken Mandanten-Anfragewegen.',
+        task: 'Glaubwürdiger Unternehmensauftritt mit einfachen Wegen für Mandantenanfragen.',
         solution: 'Moderne Kanzlei-Webplattform mit Intake-Engine.',
         tech: ['PHP', 'JavaScript'],
         url: 'https://manwalt.de',
@@ -221,7 +221,7 @@ export const de: Dictionary = {
     ],
   },
   estimator: {
-    label: 'Systemkonfigurator',
+    label: 'Kostenrechner',
     title: 'Konfigurieren Sie Ihr System.',
     intro: 'Komponenten wählen, Richtwert in Sekunden erhalten — und nach einem kurzen Gespräch ein schriftliches Festpreisangebot.',
     systemType: 'Systemtyp',
@@ -249,19 +249,31 @@ export const de: Dictionary = {
       { id: 'standard', label: 'Standard' },
       { id: 'priority', label: 'Priorität' },
     ],
-    result: 'Richtwert',
-    disclaimer: 'Unverbindliche Schätzung. Ihr Endpreis wird vor Projektstart in einem schriftlichen Angebot fixiert.',
+    result: 'Preisrahmen (Richtwert)',
+    market: 'Typischer Agenturpreis in Deutschland', vat: 'Nettopreise zzgl. MwSt.',
+    disclaimer: 'Rund 30 % unter typischen Preisen deutscher Agenturen. Unverbindliche Schätzung — Ihr Endpreis wird vor Projektstart in einem schriftlichen Angebot festgelegt.',
     email: 'Konfiguration senden an',
     submit: 'Festpreis anfragen',
     success: 'Konfiguration empfangen. Wir melden uns mit einem schriftlichen Angebot.',
   },
+  process: {
+    label: 'So arbeiten wir',
+    title: 'Klare Schritte. Keine Überraschungen.',
+    intro: 'Jedes Projekt folgt demselben transparenten Ablauf — vom ersten Gespräch bis zur langfristigen Betreuung.',
+    steps: [
+      { title: 'Erstgespräch', body: 'Zuerst hören wir zu: Ihre Abläufe, Ziele und Rahmenbedingungen. Danach wissen Sie, was sinnvoll ist.' },
+      { title: 'Schriftliches Festpreisangebot', body: 'Umfang, Zeitplan und Preis — schriftlich, bevor die Arbeit beginnt. Keine Überraschungen bei der Abrechnung.' },
+      { title: 'Umsetzung mit wöchentlichen Updates', body: 'Sie sehen jede Woche den Fortschritt in Ihrer eigenen Vorschau-Umgebung und können jederzeit Feedback geben.' },
+      { title: 'Go-live und Betreuung', body: 'Wir gehen gemeinsam live, schulen Ihr Team und bleiben Ihr Technologiepartner für Wartung und Weiterentwicklung.' },
+    ],
+  },
   insights: {
-    label: 'Feldnotizen',
+    label: 'Wissen',
     title: 'Insights',
     read: 'Artikel lesen', minutes: 'Min. Lesezeit', back: 'Alle Insights', takeaway: 'Fazit', more: 'Weitere Insights',
   },
   contact: {
-    label: 'Kanal öffnen',
+    label: 'Kontakt',
     title: 'Sagen Sie uns, was funktionieren muss.',
     intro: 'Beschreiben Sie Ihren Prozess oder Ihr Projekt. Wir antworten innerhalb eines Werktags.',
     fields: {
@@ -285,7 +297,7 @@ export const de: Dictionary = {
     budgets: ['< 5.000 €', '5.000 – 15.000 €', '15.000 – 40.000 €', '40.000 € +', 'Noch unklar'],
     submit: 'Anfrage senden',
     sending: 'Wird gesendet…',
-    success: 'Anfrage empfangen. Wir melden uns innerhalb eines Werktags.',
+    success: 'Vielen Dank — Ihre Anfrage ist eingegangen. Wir melden uns innerhalb eines Werktags.',
     errorGeneric: 'Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut oder schreiben Sie uns direkt.',
     errorConfig: 'Das Formular ist noch nicht verbunden. Bitte schreiben Sie uns direkt.',
   },
@@ -297,22 +309,6 @@ export const de: Dictionary = {
     imprint: 'Impressum',
     privacy: 'Datenschutz',
     rights: 'Alle Rechte vorbehalten.',
-  },
-  imprint: {
-    title: 'Impressum',
-    body: [
-      'Devixa ist eine Marke der Creative Solutions 88 EOOD, eingetragen in Bulgarien (EU).',
-      'Kontakt: office@devixa.de · support@devix.de',
-      'Telefon DE: +49 151 29569444 · Telefon BG: +359 895 780 379',
-    ],
-  },
-  privacy: {
-    title: 'Datenschutz',
-    body: [
-      'Verantwortlicher: Creative Solutions 88 EOOD, Bulgarien (EU). Kontakt: office@devixa.de.',
-      'Wenn Sie das Kontaktformular oder den Systemkonfigurator nutzen, speichern wir Ihre Angaben (Name, E-Mail, Unternehmen, Projektdetails), um Ihre Anfrage zu beantworten. Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (vorvertragliche Maßnahmen).',
-      'Die Daten werden auf Servern innerhalb der Europäischen Union gespeichert und nicht zu Marketingzwecken an Dritte weitergegeben.',
-      'Sie können jederzeit Auskunft, Berichtigung oder Löschung Ihrer Daten verlangen: office@devixa.de.',
-    ],
+    language: 'Sprache',
   },
 };

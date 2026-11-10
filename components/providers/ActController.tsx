@@ -30,9 +30,11 @@ const applyAct = (act: Act, immediate = false) => {
  * - `trigger`: optional selector; crossing it flips into the darkroom (and back on scroll up).
  * Also publishes hero progress (0..1) for the WebGL camera.
  */
-export const ActController = ({ initial = 'light', trigger, hero }: { initial?: Act; trigger?: string; hero?: string }) => {
+export const ActController = ({ initial = 'light', trigger, hero, veil = false }: { initial?: Act; trigger?: string; hero?: string; veil?: boolean }) => {
   useEffect(() => {
     applyAct(initial, true);
+    // Reading pages dim the 3D layer so long text stays legible.
+    document.documentElement.dataset.veil = veil ? 'on' : 'off';
     const triggers: ScrollTrigger[] = [];
 
     if (trigger) {
@@ -65,7 +67,7 @@ export const ActController = ({ initial = 'light', trigger, hero }: { initial?: 
       triggers.forEach((t) => t.kill());
       motion.hero = 0;
     };
-  }, [initial, trigger, hero]);
+  }, [initial, trigger, hero, veil]);
 
   return null;
 };
