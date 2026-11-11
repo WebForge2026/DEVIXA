@@ -58,7 +58,7 @@ export const Hero = ({ hero }: { hero: Dictionary['hero'] }) => {
       </div>
 
       <div className="mx-auto grid w-full max-w-[1600px] gap-8 pt-8 md:grid-cols-12 md:items-end">
-        <p data-fade className="max-w-xl self-end bg-bg/70 p-3 text-lg leading-snug text-fg backdrop-blur-md md:col-span-5 md:-ml-3 md:text-xl">
+        <p data-fade className="max-w-xl self-end bg-transparent p-3 text-lg leading-snug text-fg md:col-span-5 md:-ml-3 md:text-xl">
           {hero.sub}
         </p>
         <div data-fade className="flex flex-wrap gap-4 md:col-span-4">
