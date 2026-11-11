@@ -68,6 +68,9 @@ export const generateMetadata = ({ params }: { params: { locale: string } }): Me
       apple: { url: '/apple-touch-icon.png', sizes: '180x180' },
     },
     manifest: '/manifest.webmanifest',
+    // The site ships its own DE/EN/BG versions. Browser auto-translation (Edge, Chrome) garbles the
+    // split, animated headline into mixed languages, so it is switched off (with translate="no" on <html>).
+    other: { google: 'notranslate' },
     // Google Search Console: the code lives in lib/site.ts (GOOGLE_SITE_VERIFICATION).
     verification: GOOGLE_SITE_VERIFICATION ? { google: GOOGLE_SITE_VERIFICATION } : undefined,
   };
@@ -102,7 +105,7 @@ const RootLayout = ({ children, params }: { children: ReactNode; params: { local
   };
 
   return (
-    <html lang={htmlLang[params.locale]} data-act="light" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
+    <html lang={htmlLang[params.locale]} translate="no" data-act="light" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
       <body>
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:bg-crimson focus:px-4 focus:py-2 focus:text-obsidian">
           Skip to content

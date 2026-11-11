@@ -36,7 +36,7 @@ export const Footer = ({ locale, footer, nav, consentLabel }: { locale: Locale; 
             <p className="text-crimson">{footer.markets}</p>
             <ul className="mt-3 space-y-2 text-[#EEEEF2]/80">
               <li>Deutschland — DE</li>
-              <li>България — BG</li>
+              <li lang="bg">България — BG</li>
               <li>Polska — PL</li>
               <li>International</li>
             </ul>
