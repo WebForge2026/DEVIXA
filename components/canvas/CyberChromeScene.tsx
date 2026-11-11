@@ -77,14 +77,23 @@ const RimLights = () => {
  */
 const CyberChromeScene = () => {
   const [compact, setCompact] = useState(false);
+  const [desktop, setDesktop] = useState(false);
   const [maxDpr, setMaxDpr] = useState(2);
 
   useEffect(() => {
+    // The keycap sphere is desktop-only (Tailwind lg breakpoint).
+    const desktopQuery = window.matchMedia('(min-width: 1024px)');
+    const updateDesktop = () => setDesktop(desktopQuery.matches);
+    updateDesktop();
+    desktopQuery.addEventListener('change', updateDesktop);
     const query = window.matchMedia('(max-width: 768px)');
     const update = () => setCompact(query.matches);
     update();
     query.addEventListener('change', update);
-    return () => query.removeEventListener('change', update);
+    return () => {
+      query.removeEventListener('change', update);
+      desktopQuery.removeEventListener('change', updateDesktop);
+    };
   }, []);
 
   return (
@@ -108,7 +117,7 @@ const CyberChromeScene = () => {
       <Suspense fallback={null}>
         <ChromeEnvironment />
         {ChainsLayer ? <ChainsLayer compact={compact} /> : null}
-        <KeycapSphere />
+        {desktop ? <KeycapSphere /> : null}
         <Debris count={compact ? 8 : 18} />
       </Suspense>
     </Canvas>

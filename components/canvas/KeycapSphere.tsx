@@ -211,8 +211,7 @@ export const KeycapSphere = () => {
   const keys = useRef<THREE.InstancedMesh>(null);
   const legends = useRef<THREE.InstancedMesh>(null);
   const spin = useRef<THREE.Group>(null);
-  const { viewport, size } = useThree();
-  const portrait = size.width < size.height;
+  const viewport = useThree((state) => state.viewport);
 
   const slots = useMemo(buildSlots, []);
   const { atlasCanvas, atlas, legendGeometry, legendMaterial } = useMemo(() => {
@@ -312,11 +311,10 @@ export const KeycapSphere = () => {
     const t = state.clock.elapsedTime;
     const progress = scroll.current.progress;
 
-    // Placement. Landscape: right of the headline. Portrait: rising from the bottom edge, below the copy.
+    // Placement (desktop only — the scene does not mount the sphere below 1024 px): right of the headline.
     const diameter = 2 * (SPHERE_RADIUS + KEY_SIZE * 0.35);
-    const scale = portrait ? (1.05 * viewport.width) / diameter : (0.48 * viewport.height) / diameter;
-    if (portrait) restPosition.set(0, -viewport.height / 2 - 0.15, 0.4);
-    else restPosition.set(viewport.width * 0.31, 0.35, 0.4);
+    const scale = (0.48 * viewport.height) / diameter;
+    restPosition.set(viewport.width * 0.31, 0.35, 0.4);
 
     // Leaves with the hero; on pages without a hero it is not shown at all.
     const presence = 1 - THREE.MathUtils.smoothstep(motion.hero, 0.55, 0.95);
