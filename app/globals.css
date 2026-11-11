@@ -112,6 +112,12 @@
       radial-gradient(120% 80% at 50% 50%, transparent 55%, rgb(0 0 0 / 0.65) 100%);
   }
 
+  /* WCAG AA: brand red (#FF2A2A) has only ~2.9:1 on the light slate background. Small red text on
+     light surfaces uses a deeper red (≈5.3:1); dark panels and the dark act keep the brand red. */
+  :root[data-act='light'] main .text-crimson:not(.bg-obsidian .text-crimson) {
+    color: #b31212;
+  }
+
   .veil {
     background: rgb(var(--bg));
     opacity: 0;

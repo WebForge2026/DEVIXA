@@ -1,6 +1,7 @@
 import { ActController } from '@/components/providers/ActController';
 import { Contact } from '@/components/sections/Contact';
 import { Estimator } from '@/components/sections/Estimator';
+import { FaqSection } from '@/components/sections/FaqSection';
 import { Footer } from '@/components/sections/Footer';
 import { Hero } from '@/components/sections/Hero';
 import { Insights } from '@/components/sections/Insights';
@@ -9,9 +10,17 @@ import { Process } from '@/components/sections/Process';
 import { Projects } from '@/components/sections/Projects';
 import { Services } from '@/components/sections/Services';
 import { TrustRail } from '@/components/sections/TrustRail';
-import { htmlLang, type Locale } from '@/lib/i18n/config';
+import type { Metadata } from 'next';
+import { htmlLang, isLocale, type Locale } from '@/lib/i18n/config';
+import { pageMetadata } from '@/lib/seo';
 import { getDictionary } from '@/lib/i18n';
 import { getArticles } from '@/lib/i18n/articles';
+
+export const generateMetadata = ({ params }: { params: { locale: string } }): Metadata => {
+  if (!isLocale(params.locale)) return {};
+  const { meta } = getDictionary(params.locale);
+  return pageMetadata({ locale: params.locale, path: '', title: meta.title, description: meta.description, absoluteTitle: true });
+};
 
 const HomePage = ({ params }: { params: { locale: Locale } }) => {
   const dict = getDictionary(params.locale);
@@ -28,9 +37,10 @@ const HomePage = ({ params }: { params: { locale: Locale } }) => {
         <Process process={dict.process} />
         <Estimator estimator={dict.estimator} contact={dict.contact} intlLocale={htmlLang[params.locale]} />
         <Insights locale={params.locale} insights={dict.insights} articles={getArticles(params.locale)} />
+        <FaqSection faq={dict.faq} />
         <Contact locale={params.locale} contact={dict.contact} />
       </main>
-      <Footer locale={params.locale} footer={dict.footer} nav={dict.nav} />
+      <Footer locale={params.locale} footer={dict.footer} nav={dict.nav} consentLabel={dict.consent.settings} />
     </>
   );
 };

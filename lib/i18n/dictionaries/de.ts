@@ -2,9 +2,12 @@ import type { Dictionary } from '../types';
 
 export const de: Dictionary = {
   meta: {
-    title: 'Devixa — Systeme, die man spürt',
+    title: 'Devixa — Websites, Webshops & Business-Systeme zum Festpreis',
     description:
-      'Digitale Lösungen für ambitionierte Unternehmen: Websites, Webshops und Business-Systeme — gebaut für Ihre Abläufe. EU-gehostet, Festpreis, langfristige Partnerschaft.',
+      'Websites, Webshops und Business-Systeme zum Festpreis: schriftliches Angebot, wöchentliche Updates, Hosting in der EU (DSGVO). Kunden in DE, BG und PL.',
+    imprint: 'Impressum der Creative Solutions 88 EOOD (Devixa): Anschrift, Kontakt, Registereintrag und Umsatzsteuer-ID.',
+    privacy: 'Datenschutzerklärung von Devixa: welche Daten wir verarbeiten, wofür, wie lange — und welche Rechte Sie nach der DSGVO haben.',
+    notFound: 'Seite nicht gefunden',
   },
   nav: {
     services: 'Leistungen',
@@ -74,6 +77,7 @@ export const de: Dictionary = {
     items: [
       {
         slug: 'web-systems',
+        seoTitle: 'Individuelle Websysteme: Buchung, Produktion, Verwaltung',
         name: 'Individuelle Websysteme',
         category: 'Prozesse digitalisieren',
         headline: 'Individuelle Websysteme — Buchung, Produktion, Verwaltung',
@@ -110,6 +114,7 @@ export const de: Dictionary = {
       },
       {
         slug: 'automation-integration',
+        seoTitle: 'KI-Automatisierung & Integration für Unternehmen',
         name: 'KI-Automatisierung & Integration',
         category: 'Prozesse digitalisieren',
         headline: 'KI-Automatisierung für Geschäftsprozesse — systematisch statt Hype',
@@ -139,6 +144,7 @@ export const de: Dictionary = {
       },
       {
         slug: 'maintenance-support',
+        seoTitle: 'Website-Wartung & Software-Support',
         name: 'Wartung & langfristiger Support',
         category: 'Langfristig betreut',
         headline: 'Wartung und Weiterentwicklung für Ihre Website oder Software',
@@ -267,6 +273,24 @@ export const de: Dictionary = {
       { title: 'Go-live und Betreuung', body: 'Wir gehen gemeinsam live, schulen Ihr Team und bleiben Ihr Technologiepartner für Wartung und Weiterentwicklung.' },
     ],
   },
+  faq: {
+    label: 'Häufige Fragen',
+    title: 'Fragen, die uns oft gestellt werden.',
+    items: [
+      { q: 'Was kostet eine Website oder ein Business-System bei Devixa?', a: 'Vor jedem Projekt erhalten Sie ein schriftliches Festpreisangebot. Einen ersten Richtwert berechnen Sie in unserem Kostenrechner — unsere Preise liegen rund 30 % unter typischen Preisen deutscher Agenturen.' },
+      { q: 'Wie lange dauert ein Projekt?', a: 'Ein typisches individuelles Websystem dauert 2 bis 4 Monate. Während der Umsetzung erhalten Sie jede Woche ein Update und sehen den Fortschritt in Ihrer eigenen Vorschau-Umgebung.' },
+      { q: 'Wo werden meine Daten gehostet?', a: 'Ausschließlich auf Servern in der Europäischen Union. Datensouveränität und DSGVO-Konformität sind bei uns Standard, nicht Aufpreis.' },
+      { q: 'Arbeiten Sie mit Kunden in Deutschland?', a: 'Ja. Wir betreuen Kunden in Deutschland, Bulgarien, Polen und international — auf Deutsch, Englisch und Bulgarisch.' },
+      { q: 'Was passiert nach dem Go-live?', a: 'Wir bleiben Ihr Technologiepartner: Wartung, Sicherheitsupdates und Weiterentwicklung. Auf Störungen reagieren wir in der Regel am selben Werktag.' },
+      { q: 'Übernehmen Sie auch bestehende Websites und Systeme?', a: 'Ja. Nach einer Analyse des bestehenden Setups übernehmen wir Wartung und Weiterentwicklung auch für Projekte, die wir nicht selbst gebaut haben.' },
+    ],
+  },
+  consent: {
+    text: 'Wir möchten anonyme Nutzungsstatistiken erheben, um diese Website zu verbessern. Dafür brauchen wir Ihre Einwilligung.',
+    accept: 'Akzeptieren',
+    decline: 'Ablehnen',
+    settings: 'Cookie-Einstellungen',
+  },
   insights: {
     label: 'Wissen',
     title: 'Insights',
@@ -300,6 +324,13 @@ export const de: Dictionary = {
     success: 'Vielen Dank — Ihre Anfrage ist eingegangen. Wir melden uns innerhalb eines Werktags.',
     errorGeneric: 'Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut oder schreiben Sie uns direkt.',
     errorConfig: 'Das Formular ist noch nicht verbunden. Bitte schreiben Sie uns direkt.',
+    errors: {
+      name: 'Bitte geben Sie Ihren Namen ein (mindestens 2 Zeichen).',
+      email: 'Bitte geben Sie eine gültige E-Mail-Adresse ein.',
+      message: 'Bitte beschreiben Sie Ihr Anliegen (mindestens 10 Zeichen).',
+      consent: 'Bitte stimmen Sie der Verarbeitung Ihrer Daten zu.',
+      rate: 'Zu viele Anfragen in kurzer Zeit. Bitte versuchen Sie es später erneut oder schreiben Sie uns direkt.',
+    },
   },
   footer: {
     tagline: 'Systeme, entwickelt in der EU. Betreut über Jahre.',

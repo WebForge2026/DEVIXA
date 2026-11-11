@@ -6,6 +6,8 @@ export type Faq = { q: string; a: string };
 export type Service = {
   slug: ServiceSlug;
   name: string;
+  /** Search result title, max ~60 characters (" | Devixa" is appended). */
+  seoTitle: string;
   category: string;
   headline: string;
   subheadline: string;
@@ -29,7 +31,7 @@ export type Project = {
 };
 
 export type Dictionary = {
-  meta: { title: string; description: string };
+  meta: { title: string; description: string; imprint: string; privacy: string; notFound: string };
   nav: { services: string; journey: string; work: string; estimate: string; insights: string; contact: string; cta: string };
   hero: {
     eyebrow: string;
@@ -85,6 +87,8 @@ export type Dictionary = {
     success: string;
   };
   process: { label: string; title: string; intro: string; steps: { title: string; body: string }[] };
+  faq: { label: string; title: string; items: { q: string; a: string }[] };
+  consent: { text: string; accept: string; decline: string; settings: string };
   insights: { label: string; title: string; read: string; minutes: string; back: string; takeaway: string; more: string };
   contact: {
     label: string;
@@ -107,6 +111,7 @@ export type Dictionary = {
     success: string;
     errorGeneric: string;
     errorConfig: string;
+    errors: { name: string; email: string; message: string; consent: string; rate: string };
   };
   footer: {
     tagline: string;

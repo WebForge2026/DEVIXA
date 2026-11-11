@@ -28,6 +28,7 @@ export const Estimator = ({ estimator, contact, intlLocale }: EstimatorProps) =>
   const [timeline, setTimeline] = useState<TimelineId>('standard');
   const [state, action] = useFormState<ActionState, FormData>(submitEstimate, { status: 'idle' });
 
+  const emailInvalid = state.status === 'error' && Boolean(state.fieldErrors?.contact_email?.length);
   const range = useMemo(() => estimateRange(system, features, timeline), [system, features, timeline]);
   const market = useMemo(() => marketRange(system, features, timeline), [system, features, timeline]);
   const toggle = (id: FeatureId) => setFeatures((list) => (list.includes(id) ? list.filter((f) => f !== id) : [...list, id]));
@@ -116,14 +117,30 @@ export const Estimator = ({ estimator, contact, intlLocale }: EstimatorProps) =>
                   <label htmlFor="estimate-email" className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#EEEEF2]/60">
                     {estimator.email}
                   </label>
-                  <input id="estimate-email" name="contact_email" type="email" required autoComplete="email" placeholder="you@company.com" className="field mt-2 border-white/30 text-[#EEEEF2]" />
+                  <input
+                    id="estimate-email"
+                    name="contact_email"
+                    type="email"
+                    required
+                    autoComplete="email"
+                    placeholder="you@company.com"
+                    className="field mt-2 border-white/30 text-[#EEEEF2]"
+                    aria-invalid={emailInvalid}
+                    aria-describedby={emailInvalid ? 'estimate-email-error' : undefined}
+                  />
                   <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden />
                   <div className="mt-6">
                     <SubmitButton label={estimator.submit} />
                   </div>
                   {state.status === 'error' ? (
-                    <p role="alert" className="mt-4 font-mono text-xs text-crimson">
-                      {state.reason === 'config' ? contact.errorConfig : contact.errorGeneric}
+                    <p id="estimate-email-error" role="alert" className="mt-4 text-sm text-crimson">
+                      {emailInvalid
+                        ? contact.errors.email
+                        : state.reason === 'config'
+                          ? contact.errorConfig
+                          : state.reason === 'rate'
+                            ? contact.errors.rate
+                            : contact.errorGeneric}
                     </p>
                   ) : null}
                 </>

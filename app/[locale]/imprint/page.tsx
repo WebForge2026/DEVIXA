@@ -4,19 +4,15 @@ import { ActController } from '@/components/providers/ActController';
 import { Footer } from '@/components/sections/Footer';
 import { LegalPage } from '@/components/sections/LegalPage';
 import { getDictionary } from '@/lib/i18n';
-import { htmlLang, isLocale, locales } from '@/lib/i18n/config';
+import { isLocale } from '@/lib/i18n/config';
+import { pageMetadata } from '@/lib/seo';
 import { getLegal } from '@/lib/i18n/legal';
 
-export const generateMetadata = ({ params }: { params: { locale: string } }): Metadata =>
-  isLocale(params.locale)
-    ? {
-        title: getLegal(params.locale).imprint.title,
-        alternates: {
-          canonical: `/${params.locale}/imprint`,
-          languages: Object.fromEntries(locales.map((l) => [htmlLang[l], `/${l}/imprint`])),
-        },
-      }
-    : {};
+export const generateMetadata = ({ params }: { params: { locale: string } }): Metadata => {
+  if (!isLocale(params.locale)) return {};
+  const { meta } = getDictionary(params.locale);
+  return pageMetadata({ locale: params.locale, path: '/imprint', title: getLegal(params.locale).imprint.title, description: meta.imprint });
+};
 
 const Page = ({ params }: { params: { locale: string } }) => {
   if (!isLocale(params.locale)) notFound();
@@ -28,7 +24,7 @@ const Page = ({ params }: { params: { locale: string } }) => {
       <main id="main" className="px-4 pb-28 pt-32 md:px-8">
         <LegalPage doc={getLegal(params.locale).imprint} />
       </main>
-      <Footer locale={params.locale} footer={dict.footer} nav={dict.nav} />
+      <Footer locale={params.locale} footer={dict.footer} nav={dict.nav} consentLabel={dict.consent.settings} />
     </>
   );
 };

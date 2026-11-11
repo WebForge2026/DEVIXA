@@ -24,7 +24,7 @@ export const Services = ({ locale, services }: { locale: Locale; services: Dicti
         {services.items.map((service, i) => (
           <div key={service.slug} data-reveal>
             <SpotlightCard beam className="flex h-full flex-col">
-              <Link href={`/${locale}/services/${service.slug}`} className="flex h-full flex-col p-7 md:p-8" aria-label={`${services.open}: ${service.name}`}>
+              <Link href={`/${locale}/services/${service.slug}`} className="flex h-full flex-col p-7 md:p-8">
                 <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.25em] text-fg/60">
                   <span>0{i + 1} · {service.category}</span>
                   <ArrowUpRight size={18} className="text-crimson transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1" />

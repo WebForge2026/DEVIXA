@@ -5,6 +5,7 @@ export const en: Article[] = [
     slug: 'ai-agent-automation',
     title: 'What can an AI agent automate in a business?',
     category: 'AI & Process Automation',
+    metaDescription: 'Which tasks an AI agent can sensibly take over in a business, where fixed rules work better — and how to automate processes safely.',
     lede: 'Less than the hype suggests, more than most teams use. The useful question is not "can AI do this?" but "which part of this process needs judgement on unstructured input?"',
     readMinutes: 5,
     sections: [
@@ -43,6 +44,7 @@ export const en: Article[] = [
     slug: 'ai-document-processing',
     title: 'AI document processing workflows',
     category: 'AI & Document Processing',
+    metaDescription: 'How AI reads, validates and transfers invoices, delivery notes and contracts into your ERP — with a review queue instead of retyping.',
     lede: 'Invoices, delivery notes, contracts, forms: documents are where data goes to be re-typed. A well-built workflow reads them once and puts the data where it belongs.',
     readMinutes: 4,
     sections: [
@@ -78,6 +80,7 @@ export const en: Article[] = [
     slug: 'ai-email-automation',
     title: 'AI email automation from inbox to workflow',
     category: 'Automation & Integration',
+    metaDescription: 'How AI email automation classifies requests, extracts data and creates cases in your systems — GDPR-compliant on EU infrastructure.',
     lede: 'For many businesses the shared inbox is the real operating system. Orders, questions, complaints and attachments all arrive in the same place — and leave as manual work.',
     readMinutes: 4,
     sections: [

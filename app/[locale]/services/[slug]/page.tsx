@@ -1,15 +1,17 @@
-import { AlertTriangle, ArrowLeft, ArrowUpRight, CalendarClock, Plus } from 'lucide-react';
+import { AlertTriangle, ArrowLeft, ArrowUpRight, CalendarClock } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ActController } from '@/components/providers/ActController';
 import { Footer } from '@/components/sections/Footer';
+import { Faq } from '@/components/ui/Faq';
 import { Keycap } from '@/components/ui/Keycap';
 import { MagneticButton } from '@/components/ui/MagneticButton';
 import { Reveal } from '@/components/ui/Reveal';
 import { SectionLabel } from '@/components/ui/SectionLabel';
 import { SpotlightCard } from '@/components/ui/SpotlightCard';
-import { htmlLang, isLocale, locales, type Locale } from '@/lib/i18n/config';
+import { isLocale, locales, type Locale } from '@/lib/i18n/config';
+import { pageMetadata } from '@/lib/seo';
 import { getDictionary } from '@/lib/i18n';
 import { serviceSlugs } from '@/lib/site';
 
@@ -29,14 +31,12 @@ const findService = ({ locale, slug }: Params) => {
 export const generateMetadata = ({ params }: { params: Params }): Metadata => {
   const found = findService(params);
   if (!found) return {};
-  return {
-    title: found.service.name,
+  return pageMetadata({
+    locale: found.locale,
+    path: `/services/${params.slug}`,
+    title: found.service.seoTitle,
     description: found.service.subheadline,
-    alternates: {
-      canonical: `/${params.locale}/services/${params.slug}`,
-      languages: Object.fromEntries(locales.map((l) => [htmlLang[l], `/${l}/services/${params.slug}`])),
-    },
-  };
+  });
 };
 
 const ServicePage = ({ params }: { params: Params }) => {
@@ -145,16 +145,8 @@ const ServicePage = ({ params }: { params: Params }) => {
           {service.faq ? (
             <section aria-labelledby="faq" className="border-t border-line/15 py-20">
               <h2 id="faq" className="font-mono text-[11px] uppercase tracking-[0.25em] text-crimson">{t.faq}</h2>
-              <div className="mt-8 border-t border-line/15">
-                {service.faq.map((item) => (
-                  <details key={item.q} className="group border-b border-line/15">
-                    <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-6 text-xl font-medium tracking-tight md:text-2xl [&::-webkit-details-marker]:hidden" data-cursor="lens">
-                      {item.q}
-                      <Plus size={20} className="shrink-0 text-crimson transition-transform duration-300 group-open:rotate-45" />
-                    </summary>
-                    <p className="max-w-3xl pb-8 text-fg/75">{item.a}</p>
-                  </details>
-                ))}
+              <div className="mt-8">
+                <Faq items={service.faq} />
               </div>
             </section>
           ) : null}
@@ -182,7 +174,7 @@ const ServicePage = ({ params }: { params: Params }) => {
           </section>
         </div>
       </main>
-      <Footer locale={locale} footer={dict.footer} nav={dict.nav} />
+      <Footer locale={locale} footer={dict.footer} nav={dict.nav} consentLabel={dict.consent.settings} />
     </>
   );
 };

@@ -5,6 +5,7 @@ export const de: Article[] = [
     slug: 'ai-agent-automation',
     title: 'Was kann ein KI-Agent in einem Unternehmen automatisieren?',
     category: 'KI & Prozessautomatisierung',
+    metaDescription: 'Welche Aufgaben ein KI-Agent im Unternehmen sinnvoll übernimmt, wo feste Regeln besser sind — und wie Sie Prozesse sicher automatisieren.',
     lede: 'Weniger, als der Hype verspricht — mehr, als die meisten Teams nutzen. Die sinnvolle Frage lautet nicht „Kann KI das?“, sondern „Welcher Teil dieses Prozesses braucht Urteilsvermögen bei unstrukturierten Eingaben?“',
     readMinutes: 5,
     sections: [
@@ -43,6 +44,7 @@ export const de: Article[] = [
     slug: 'ai-document-processing',
     title: 'KI-Workflows für die Dokumentenverarbeitung',
     category: 'KI & Dokumentenverarbeitung',
+    metaDescription: 'Wie KI Rechnungen, Lieferscheine und Verträge ausliest, prüft und ins ERP überträgt — mit Validierung und Prüfliste statt Abtippen.',
     lede: 'Rechnungen, Lieferscheine, Verträge, Formulare: In Dokumenten werden Daten abgetippt. Ein guter Workflow liest sie einmal und legt die Daten dort ab, wo sie hingehören.',
     readMinutes: 4,
     sections: [
@@ -78,6 +80,7 @@ export const de: Article[] = [
     slug: 'ai-email-automation',
     title: 'KI-E-Mail-Automatisierung vom Posteingang zum Workflow',
     category: 'Automatisierung & Integration',
+    metaDescription: 'Wie KI-E-Mail-Automatisierung Anfragen klassifiziert, Daten extrahiert und Vorgänge in Ihren Systemen anlegt — DSGVO-konform in der EU.',
     lede: 'Für viele Unternehmen ist das gemeinsame Postfach das eigentliche Betriebssystem. Bestellungen, Fragen, Reklamationen und Anhänge kommen am selben Ort an — und gehen als Handarbeit wieder hinaus.',
     readMinutes: 4,
     sections: [

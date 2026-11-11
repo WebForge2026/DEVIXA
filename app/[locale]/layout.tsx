@@ -10,7 +10,10 @@ import { Cursor } from '@/components/ui/Cursor';
 import { Grain } from '@/components/ui/Grain';
 import { htmlLang, isLocale, locales } from '@/lib/i18n/config';
 import { getDictionary } from '@/lib/i18n';
-import { site } from '@/lib/site';
+import { GOOGLE_SITE_VERIFICATION, site } from '@/lib/site';
+import { isIndexable } from '@/lib/seo';
+import { Analytics } from '@/components/providers/Analytics';
+import { CookieConsent } from '@/components/ui/CookieConsent';
 import '../globals.css';
 
 const display = Unbounded({
@@ -48,20 +51,25 @@ export const generateMetadata = ({ params }: { params: { locale: string } }): Me
   const dict = getDictionary(params.locale);
   return {
     metadataBase: new URL(site.url),
-    title: { default: dict.meta.title, template: `%s — Devixa` },
+    title: { default: dict.meta.title, template: '%s | Devixa' },
     description: dict.meta.description,
-    alternates: {
-      canonical: `/${params.locale}`,
-      languages: { ...Object.fromEntries(locales.map((l) => [htmlLang[l], `/${l}`])), 'x-default': '/de' },
+    applicationName: 'Devixa',
+    authors: [{ name: site.legalEntity, url: site.url }],
+    creator: site.legalEntity,
+    publisher: site.legalEntity,
+    formatDetection: { telephone: true, email: true, address: false },
+    robots: isIndexable ? { index: true, follow: true } : { index: false, follow: true },
+    icons: {
+      icon: [
+        { url: '/icon.svg', type: 'image/svg+xml' },
+        { url: '/icon-192.png', type: 'image/png', sizes: '192x192' },
+      ],
+      shortcut: '/favicon.ico',
+      apple: { url: '/apple-touch-icon.png', sizes: '180x180' },
     },
-    openGraph: {
-      type: 'website',
-      siteName: 'Devixa',
-      title: dict.meta.title,
-      description: dict.meta.description,
-      locale: htmlLang[params.locale].replace('-', '_'),
-    },
-    icons: { icon: '/icon.svg' },
+    manifest: '/manifest.webmanifest',
+    // Google Search Console: the code lives in lib/site.ts (GOOGLE_SITE_VERIFICATION).
+    verification: GOOGLE_SITE_VERIFICATION ? { google: GOOGLE_SITE_VERIFICATION } : undefined,
   };
 };
 
@@ -84,6 +92,15 @@ const RootLayout = ({ children, params }: { children: ReactNode; params: { local
     ],
   };
 
+  const website = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Devixa',
+    url: `${site.url}/${params.locale}`,
+    inLanguage: htmlLang[params.locale],
+    publisher: { '@type': 'Organization', name: site.legalEntity },
+  };
+
   return (
     <html lang={htmlLang[params.locale]} data-act="light" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
       <body>
@@ -104,7 +121,9 @@ const RootLayout = ({ children, params }: { children: ReactNode; params: { local
           <Cursor />
           <Grain />
         </SmoothScroll>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organization) }} />
+        <CookieConsent locale={params.locale} consent={dict.consent} privacyLabel={dict.footer.privacy} />
+        <Analytics />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify([organization, website]) }} />
       </body>
     </html>
   );

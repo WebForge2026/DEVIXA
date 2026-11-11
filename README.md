@@ -49,6 +49,15 @@ lib/
 supabase/schema.sql         tables, constraints, RLS: anon INSERT only, reads for service_role
 ```
 
+## SEO & launch
+
+- Every page: title, description, canonical (https://devixa.de/…), hreflang (de/en/bg + x-default),
+  Open Graph and Twitter card via `lib/seo.ts` → `pageMetadata()`.
+- `/sitemap.xml` (`app/sitemap.ts`, all routes × 3 languages with hreflang), `/robots.txt` (`app/robots.ts`;
+  Vercel preview deployments are blocked), `/manifest.webmanifest`, favicon/app icons in `public/`.
+- Google Search Console code: `lib/site.ts` → `GOOGLE_SITE_VERIFICATION` (or env var).
+- Analytics: `lib/analytics.ts` (env vars); GA4/GTM only load after opt-in in the cookie banner.
+
 ## Before going live
 
 1. Fill in the `null` fields in `lib/legal.ts` (address, managing director, ЕИК, VAT ID, hosting provider).

@@ -6,6 +6,8 @@ export type Article = {
   title: string;
   category: string;
   lede: string;
+  /** Search result description, max ~155 characters. */
+  metaDescription: string;
   readMinutes: number;
   sections: { heading: string; body: string[] }[];
   takeaway: string;

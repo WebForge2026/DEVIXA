@@ -2,9 +2,12 @@ import type { Dictionary } from '../types';
 
 export const en: Dictionary = {
   meta: {
-    title: 'Devixa — We craft systems you can feel',
+    title: 'Devixa — Websites, Webshops & Business Systems at a Fixed Price',
     description:
-      'Digital solutions for ambitious businesses: websites, webshops and business systems — built for your operations. EU-hosted, fixed-price, long-term partnership.',
+      'Websites, webshops and custom business systems at a fixed price: written quote, weekly updates, EU hosting (GDPR). Clients in Germany, Bulgaria and Poland.',
+    imprint: 'Legal notice of Creative Solutions 88 EOOD (Devixa): address, contact, company registration and VAT ID.',
+    privacy: 'Devixa privacy policy: which data we process, why, for how long — and your rights under the GDPR.',
+    notFound: 'Page not found',
   },
   nav: {
     services: 'Services',
@@ -74,6 +77,7 @@ export const en: Dictionary = {
     items: [
       {
         slug: 'web-systems',
+        seoTitle: 'Custom Web Systems for Booking, Production & Admin',
         name: 'Custom Web Systems',
         category: 'Digitize processes',
         headline: 'Custom web systems — booking, production, administration',
@@ -110,6 +114,7 @@ export const en: Dictionary = {
       },
       {
         slug: 'automation-integration',
+        seoTitle: 'AI Automation & System Integration for Businesses',
         name: 'AI Automation & Integration',
         category: 'Digitize processes',
         headline: 'AI automation for business processes — systematic, not hype-driven',
@@ -139,6 +144,7 @@ export const en: Dictionary = {
       },
       {
         slug: 'maintenance-support',
+        seoTitle: 'Website Maintenance & Long-Term Software Support',
         name: 'Maintenance & Long-Term Support',
         category: 'Supported long-term',
         headline: 'Maintenance and further development for your website or software',
@@ -267,6 +273,24 @@ export const en: Dictionary = {
       { title: 'Go-live and support', body: 'We launch together, train your team and stay on as your technology partner for maintenance and further development.' },
     ],
   },
+  faq: {
+    label: 'FAQ',
+    title: 'Questions we are often asked.',
+    items: [
+      { q: 'How much does a website or business system cost at Devixa?', a: 'Every project starts with a written fixed-price quote. Get a first estimate in our cost calculator — our prices are around 30% below typical German agency rates.' },
+      { q: 'How long does a project take?', a: 'A typical custom web system takes 2 to 4 months. During the build you get a weekly update and can follow progress in your own preview environment.' },
+      { q: 'Where is my data hosted?', a: 'Exclusively on servers inside the European Union. Data sovereignty and GDPR compliance are our standard, not an extra.' },
+      { q: 'Do you work with clients in Germany?', a: 'Yes. We work with clients in Germany, Bulgaria, Poland and internationally — in German, English and Bulgarian.' },
+      { q: 'What happens after go-live?', a: 'We stay on as your technology partner: maintenance, security updates and further development. We usually respond to incidents the same working day.' },
+      { q: 'Do you take over existing websites and systems?', a: 'Yes. After analysing the existing setup, we take over maintenance and further development for projects we did not build ourselves.' },
+    ],
+  },
+  consent: {
+    text: 'We would like to collect anonymous usage statistics to improve this website. For this we need your consent.',
+    accept: 'Accept',
+    decline: 'Decline',
+    settings: 'Cookie settings',
+  },
   insights: {
     label: 'Knowledge',
     title: 'Insights',
@@ -300,6 +324,13 @@ export const en: Dictionary = {
     success: 'Thank you — your enquiry has been received. We will get back to you within one working day.',
     errorGeneric: 'Something went wrong. Please try again or email us directly.',
     errorConfig: 'The form is not connected yet. Please email us directly.',
+    errors: {
+      name: 'Please enter your name (at least 2 characters).',
+      email: 'Please enter a valid email address.',
+      message: 'Please describe your request (at least 10 characters).',
+      consent: 'Please agree to the processing of your data.',
+      rate: 'Too many requests in a short time. Please try again later or email us directly.',
+    },
   },
   footer: {
     tagline: 'Systems engineered in the EU. Supported for years.',

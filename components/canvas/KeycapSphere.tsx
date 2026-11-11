@@ -317,8 +317,10 @@ export const KeycapSphere = () => {
     const scale = (SPHERE_HEIGHT * viewport.height) / diameter;
     restPosition.set(viewport.width * SPHERE_OFFSET_X, 0.35, 0.4);
 
-    // Leaves with the hero; on pages without a hero it is not shown at all.
-    const presence = 1 - THREE.MathUtils.smoothstep(motion.hero, 0.55, 0.95);
+    // Leaves with the hero; on pages without a hero (services, articles, legal, 404) it is not shown at all.
+    // Checked every frame (O(1) lookup) so client-side navigation between pages is covered too.
+    const onHeroPage = document.getElementById('hero') !== null;
+    const presence = onHeroPage ? 1 - THREE.MathUtils.smoothstep(motion.hero, 0.55, 0.95) : 0;
     root.current.visible = presence > 0.01;
     if (!root.current.visible) return;
 

@@ -3,10 +3,11 @@ import { LanyardMount } from '@/components/canvas/LanyardMount';
 import type { Locale } from '@/lib/i18n/config';
 import type { Dictionary } from '@/lib/i18n/types';
 import { site } from '@/lib/site';
+import { ConsentSettingsLink } from '@/components/ui/CookieConsent';
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 import { DxMark } from '@/components/ui/Wordmark';
 
-export const Footer = ({ locale, footer, nav }: { locale: Locale; footer: Dictionary['footer']; nav: Dictionary['nav'] }) => (
+export const Footer = ({ locale, footer, nav, consentLabel }: { locale: Locale; footer: Dictionary['footer']; nav: Dictionary['nav']; consentLabel?: string }) => (
   <footer className="relative isolate min-h-[100svh] overflow-hidden border-t border-crimson/30 bg-obsidian text-[#EEEEF2]">
     <div aria-hidden className="absolute inset-0 -z-10 bg-[radial-gradient(50%_60%_at_75%_20%,rgba(255,42,42,0.22),transparent_70%),radial-gradient(40%_50%_at_0%_100%,rgba(153,0,0,0.3),transparent_70%)]" />
 
@@ -45,6 +46,11 @@ export const Footer = ({ locale, footer, nav }: { locale: Locale; footer: Dictio
             <ul className="mt-3 space-y-2 text-[#EEEEF2]/80">
               <li><Link className="hover:text-crimson" href={`/${locale}/imprint`}>{footer.imprint}</Link></li>
               <li><Link className="hover:text-crimson" href={`/${locale}/privacy`}>{footer.privacy}</Link></li>
+              {consentLabel ? (
+                <li>
+                  <ConsentSettingsLink label={consentLabel} className="uppercase tracking-[0.2em] hover:text-crimson" />
+                </li>
+              ) : null}
             </ul>
           </div>
         </div>

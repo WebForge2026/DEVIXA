@@ -11,6 +11,7 @@ import { getDictionary } from '@/lib/i18n';
 import { getArticle, getArticles } from '@/lib/i18n/articles';
 import { articleSlugs } from '@/lib/i18n/articles/types';
 import { htmlLang, isLocale, locales } from '@/lib/i18n/config';
+import { pageMetadata } from '@/lib/seo';
 import { site } from '@/lib/site';
 
 type Params = { locale: string; slug: string };
@@ -28,15 +29,13 @@ const load = ({ locale, slug }: Params) => {
 export const generateMetadata = ({ params }: { params: Params }): Metadata => {
   const found = load(params);
   if (!found) return {};
-  return {
+  return pageMetadata({
+    locale: found.locale,
+    path: `/insights/${params.slug}`,
     title: found.article.title,
-    description: found.article.lede,
-    alternates: {
-      canonical: `/${params.locale}/insights/${params.slug}`,
-      languages: Object.fromEntries(locales.map((l) => [htmlLang[l], `/${l}/insights/${params.slug}`])),
-    },
-    openGraph: { type: 'article', title: found.article.title, description: found.article.lede },
-  };
+    description: found.article.metaDescription,
+    type: 'article',
+  });
 };
 
 const ArticlePage = ({ params }: { params: Params }) => {
@@ -114,7 +113,7 @@ const ArticlePage = ({ params }: { params: Params }) => {
         </article>
         <Insights locale={locale} insights={dict.insights} articles={others} index="+" heading={dict.insights.more} />
       </main>
-      <Footer locale={locale} footer={dict.footer} nav={dict.nav} />
+      <Footer locale={locale} footer={dict.footer} nav={dict.nav} consentLabel={dict.consent.settings} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
     </>
   );

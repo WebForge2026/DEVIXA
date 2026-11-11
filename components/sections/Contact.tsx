@@ -19,8 +19,13 @@ const Submit = ({ idle, busy }: { idle: string; busy: string }) => {
   );
 };
 
-const FieldError = ({ errors }: { errors?: string[] }) =>
-  errors?.length ? <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.15em] text-crimson">{errors[0]}</p> : null;
+/** Shows a translated message for a field that failed server validation. */
+const FieldError = ({ id, show, message }: { id: string; show: boolean; message: string }) =>
+  show ? (
+    <p id={id} role="alert" className="mt-2 text-sm text-crimson">
+      {message}
+    </p>
+  ) : null;
 
 const CHANNELS = [
   { icon: Mail, label: 'Office', value: site.contact.office, href: `mailto:${site.contact.office}` },
@@ -33,12 +38,14 @@ export const Contact = ({ locale, contact }: { locale: Locale; contact: Dictiona
   const [state, action] = useFormState<ActionState, FormData>(submitLead, { status: 'idle' });
   const errors = state.status === 'error' ? state.fieldErrors : undefined;
   const f = contact.fields;
+  const e = contact.errors;
+  const invalid = (field: string) => Boolean(errors?.[field]?.length);
 
   return (
     <section id="contact" aria-labelledby="contact-title" className="relative px-4 py-28 md:px-8">
       <div className="mx-auto grid max-w-[1600px] gap-12 lg:grid-cols-12">
         <div className="lg:col-span-5">
-          <SectionLabel index="07">{contact.label}</SectionLabel>
+          <SectionLabel index="08">{contact.label}</SectionLabel>
           <h2 id="contact-title" className="type-display mt-5 text-[clamp(2rem,4.6vw,4.5rem)]">
             {contact.title}
           </h2>
@@ -69,13 +76,13 @@ export const Contact = ({ locale, contact }: { locale: Locale; contact: Dictiona
             <form action={action} noValidate className="grid gap-x-8 gap-y-7 md:grid-cols-2">
               <div>
                 <label htmlFor="full_name" className="font-mono text-[10px] uppercase tracking-[0.25em] text-fg/60">{f.fullName} *</label>
-                <input id="full_name" name="full_name" required minLength={2} maxLength={120} autoComplete="name" className="field" aria-invalid={Boolean(errors?.full_name)} />
-                <FieldError errors={errors?.full_name} />
+                <input id="full_name" name="full_name" required minLength={2} maxLength={120} autoComplete="name" className="field" aria-invalid={invalid('full_name')} aria-describedby={invalid('full_name') ? 'full_name-error' : undefined} />
+                <FieldError id="full_name-error" show={invalid('full_name')} message={e.name} />
               </div>
               <div>
                 <label htmlFor="email" className="font-mono text-[10px] uppercase tracking-[0.25em] text-fg/60">{f.email} *</label>
-                <input id="email" name="email" type="email" required maxLength={254} autoComplete="email" className="field" aria-invalid={Boolean(errors?.email)} />
-                <FieldError errors={errors?.email} />
+                <input id="email" name="email" type="email" required maxLength={254} autoComplete="email" className="field" aria-invalid={invalid('email')} aria-describedby={invalid('email') ? 'email-error' : undefined} />
+                <FieldError id="email-error" show={invalid('email')} message={e.email} />
               </div>
               <div>
                 <label htmlFor="company" className="font-mono text-[10px] uppercase tracking-[0.25em] text-fg/60">{f.company}</label>
@@ -104,25 +111,25 @@ export const Contact = ({ locale, contact }: { locale: Locale; contact: Dictiona
               </fieldset>
               <div className="md:col-span-2">
                 <label htmlFor="message" className="font-mono text-[10px] uppercase tracking-[0.25em] text-fg/60">{f.message} *</label>
-                <textarea id="message" name="message" required minLength={10} maxLength={5000} rows={5} className="field resize-y" aria-invalid={Boolean(errors?.message)} />
-                <FieldError errors={errors?.message} />
+                <textarea id="message" name="message" required minLength={10} maxLength={5000} rows={5} className="field resize-y" aria-invalid={invalid('message')} aria-describedby={invalid('message') ? 'message-error' : undefined} />
+                <FieldError id="message-error" show={invalid('message')} message={e.message} />
               </div>
               <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden />
               <label className="flex items-start gap-3 text-sm text-fg/75 md:col-span-2">
-                <input type="checkbox" name="consent" required className="mt-1 h-4 w-4 accent-[#FF2A2A]" />
+                <input type="checkbox" name="consent" required className="mt-1 h-4 w-4 accent-[#FF2A2A]" aria-invalid={invalid('consent')} aria-describedby={invalid('consent') ? 'consent-error' : undefined} />
                 <span>
                   {f.consent}{' '}
                   <Link href={`/${locale}/privacy`} className="underline decoration-crimson underline-offset-4">
                     {f.privacyLink}
                   </Link>
-                  <FieldError errors={errors?.consent} />
+                  <FieldError id="consent-error" show={invalid('consent')} message={e.consent} />
                 </span>
               </label>
               <div className="flex flex-wrap items-center gap-6 md:col-span-2">
                 <Submit idle={contact.submit} busy={contact.sending} />
                 {state.status === 'error' && state.reason !== 'validation' ? (
                   <p role="alert" className="font-mono text-xs text-crimson">
-                    {state.reason === 'config' ? contact.errorConfig : contact.errorGeneric}
+                    {state.reason === 'config' ? contact.errorConfig : state.reason === 'rate' ? e.rate : contact.errorGeneric}
                   </p>
                 ) : null}
               </div>
