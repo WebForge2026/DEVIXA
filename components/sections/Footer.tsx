@@ -4,7 +4,7 @@ import type { Locale } from '@/lib/i18n/config';
 import type { Dictionary } from '@/lib/i18n/types';
 import { site } from '@/lib/site';
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
-import { StarGlyph } from '@/components/ui/Wordmark';
+import { DxMark } from '@/components/ui/Wordmark';
 
 export const Footer = ({ locale, footer, nav }: { locale: Locale; footer: Dictionary['footer']; nav: Dictionary['nav'] }) => (
   <footer className="relative isolate min-h-[100svh] overflow-hidden border-t border-crimson/30 bg-obsidian text-[#EEEEF2]">
@@ -50,9 +50,8 @@ export const Footer = ({ locale, footer, nav }: { locale: Locale; footer: Dictio
         </div>
       </div>
 
-      <div className="mt-16 flex items-end gap-3 lg:gap-6">
-        <StarGlyph className="mb-[1vw] h-[6vw] w-[6vw] shrink-0 text-crimson" />
-        <p aria-hidden className="type-display text-[14vw] leading-[0.8] text-[#EEEEF2]">Devixa</p>
+      <div className="mt-16" aria-hidden>
+        <DxMark className="h-[15vw] text-[#EEEEF2]" />
       </div>
       <div className="mt-8 font-mono text-[11px] uppercase tracking-[0.2em]">
         <LanguageSwitcher locale={locale} label={footer.language} />

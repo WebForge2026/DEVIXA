@@ -1,16 +1,12 @@
 import { ImageResponse } from 'next/og';
+import { DX_CRIMSON, DX_D_PATH, DX_VIEWBOX, DX_X_PATH } from '@/components/ui/Wordmark';
 
 export const alt = 'Devixa — We craft systems you can feel';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
-const star = Array.from({ length: 16 }, (_, i) => {
-  const a = (i / 16) * Math.PI * 2 - Math.PI / 2;
-  const r = i % 2 === 0 ? 120 : 44;
-  return `${(130 + Math.cos(a) * r).toFixed(1)},${(130 + Math.sin(a) * r).toFixed(1)}`;
-}).join(' ');
 
-/** Social preview: obsidian darkroom card with the crimson spike-star. */
+/** Social preview: obsidian card with the DX logo. */
 const OpengraphImage = () =>
   new ImageResponse(
     (
@@ -37,8 +33,9 @@ const OpengraphImage = () =>
             <span>SYSTEMS YOU</span>
             <span style={{ color: '#FF2A2A' }}>CAN FEEL.</span>
           </div>
-          <svg width="260" height="260" viewBox="0 0 260 260">
-            <polygon points={star} fill="#FF2A2A" />
+          <svg width="360" height="216" viewBox={DX_VIEWBOX}>
+            <path fill="#EEEEF2" fillRule="evenodd" d={DX_D_PATH} />
+            <path fill={DX_CRIMSON} d={DX_X_PATH} />
           </svg>
         </div>
         <div style={{ display: 'flex', fontSize: 22, color: '#9a9aa6' }}>Websites · Webshops · Business systems — EU-hosted, fixed price</div>
