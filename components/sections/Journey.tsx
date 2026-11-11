@@ -27,7 +27,17 @@ export const Journey = ({ journey }: { journey: Dictionary['journey'] }) => {
     const mm = gsap.matchMedia();
 
     mm.add('(min-width: 1024px) and (prefers-reduced-motion: no-preference)', () => {
-      const distance = () => rail.scrollWidth - window.innerWidth;
+      // Travel until the last card's right edge sits as far from the visible edge as the
+      // first card sits from the left. Uses clientWidth, so a classic scrollbar is excluded.
+      const lastCard = rail.lastElementChild as HTMLElement | null;
+      const distance = () => {
+        if (!lastCard) return 0;
+        const endGap = parseFloat(getComputedStyle(rail).paddingLeft) || 32;
+        // The transformed rail is the card's offsetParent, so add the rail's own offset.
+        const railOffset = lastCard.offsetParent === rail ? rail.offsetLeft : 0;
+        const right = railOffset + lastCard.offsetLeft + lastCard.offsetWidth;
+        return Math.max(0, right + endGap - document.documentElement.clientWidth);
+      };
       const steps = journey.steps.length;
       gsap.to(rail, {
         x: () => -distance(),
@@ -122,12 +132,12 @@ export const Journey = ({ journey }: { journey: Dictionary['journey'] }) => {
                     <span>{(i + 1) * 20}%</span>
                   </div>
                 </div>
-                <div className="mt-10 grid gap-6 md:grid-cols-[1.1fr_1fr] md:items-end lg:mt-[clamp(1rem,3vh,2.5rem)] lg:pb-1 lg:[@media(max-height:820px)]:mt-auto">
+                <div className="mt-10 grid gap-6 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] md:items-end lg:mt-[clamp(1rem,3vh,2.5rem)] lg:pb-1 lg:[@media(max-height:820px)]:mt-auto">
                   <div>
                     <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-crimson">{step.tag}</p>
                     <h3 className="type-display mt-3 text-[clamp(1.6rem,3.2vw,3.25rem)] lg:text-[clamp(1.4rem,min(3.2vw,5.5vh),3.25rem)]">{step.title}</h3>
                   </div>
-                  <p className="text-base leading-relaxed text-fg/80 md:text-lg lg:[@media(max-height:820px)]:text-base">{step.body}</p>
+                  <p className="min-w-0 break-words text-base leading-relaxed text-fg/80 md:text-lg lg:hyphens-auto lg:[text-wrap:pretty] lg:[@media(max-height:820px)]:text-base">{step.body}</p>
                 </div>
                 {/* Connector to next stage */}
                 {i < journey.steps.length - 1 ? (

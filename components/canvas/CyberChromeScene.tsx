@@ -2,15 +2,23 @@
 
 import { AdaptiveDpr, PerformanceMonitor } from '@react-three/drei';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Physics } from '@react-three/rapier';
-import { Suspense, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { motion } from '@/lib/store';
 import { damp } from '@/lib/utils';
-import { Chains } from './Chains';
 import { ChromeEnvironment } from './ChromeEnvironment';
 import { Debris } from './Debris';
 import { SpikeStar } from './SpikeStar';
+
+/**
+ * Feature flag for the 3D chains. Toggle to true to restore them instantly.
+ * The implementation is untouched in ./Chains.tsx (archived copy: components/_drafts/Chains.backup.tsx).
+ * While false, the chains, their physics world and their per-frame input handling are never
+ * loaded or mounted, so they cost no download, CPU or GPU time.
+ */
+const ENABLE_CHAINS = false;
+
+const ChainsLayer = ENABLE_CHAINS ? lazy(() => import('./ChainsLayer')) : null;
 
 const SLATE = new THREE.Color('#E2E4E9');
 const OBSIDIAN = new THREE.Color('#050507');
@@ -99,9 +107,7 @@ const CyberChromeScene = () => {
       <RimLights />
       <Suspense fallback={null}>
         <ChromeEnvironment />
-        <Physics gravity={[0, -9.81, 0]} timeStep={1 / 60}>
-          <Chains compact={compact} />
-        </Physics>
+        {ChainsLayer ? <ChainsLayer compact={compact} /> : null}
         <SpikeStar />
         <Debris count={compact ? 8 : 18} />
       </Suspense>
