@@ -66,51 +66,6 @@ export const createChainLinkGeometry = (pitch: number, wire = 0.055) => {
   return new THREE.TubeGeometry(new StadiumCurve(halfStraight, radius), 72, wire, 14, true);
 };
 
-/** Multi-pointed star with hard bevels: the Devixa core. */
-export const createStarGeometry = (points: number, outer: number, inner: number, depth: number, bevel: number) => {
-  const shape = new THREE.Shape();
-  const count = points * 2;
-  for (let i = 0; i <= count; i += 1) {
-    const angle = (i / count) * Math.PI * 2 + Math.PI / 2;
-    const r = i % 2 === 0 ? outer : inner;
-    const x = Math.cos(angle) * r;
-    const y = Math.sin(angle) * r;
-    if (i === 0) shape.moveTo(x, y);
-    else shape.lineTo(x, y);
-  }
-  const geometry = new THREE.ExtrudeGeometry(shape, {
-    depth,
-    bevelEnabled: true,
-    bevelThickness: bevel,
-    bevelSize: bevel * 0.85,
-    bevelSegments: 1,
-    curveSegments: 1,
-  });
-  geometry.center();
-  geometry.computeVertexNormals();
-  return geometry;
-};
-
-/** Radial glow sprite texture for optical flares. */
-export const createGlowTexture = (inner: string, outer: string) => {
-  const size = 256;
-  const canvas = document.createElement('canvas');
-  canvas.width = size;
-  canvas.height = size;
-  const ctx = canvas.getContext('2d');
-  if (ctx) {
-    const gradient = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
-    gradient.addColorStop(0, inner);
-    gradient.addColorStop(0.25, outer);
-    gradient.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, size, size);
-  }
-  const texture = new THREE.CanvasTexture(canvas);
-  texture.colorSpace = THREE.SRGBColorSpace;
-  return texture;
-};
-
 /** Small square canvas texture with a single mono legend, for keycap tops. */
 export const createLegendTexture = (legend: string, color: string) => {
   const size = 128;

@@ -16,7 +16,5 @@ export const motion = {
   hero: 0,
   /** Act blend: 0 = Industrial Slate, 1 = Obsidian Darkroom. Tweened by GSAP. */
   dark: 0,
-  /** Red optical flare energy, spiked on star click and decayed in the scene. */
-  flare: 0,
   reducedMotion: false,
 };

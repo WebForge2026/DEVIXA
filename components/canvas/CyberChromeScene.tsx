@@ -8,7 +8,7 @@ import { motion } from '@/lib/store';
 import { damp } from '@/lib/utils';
 import { ChromeEnvironment } from './ChromeEnvironment';
 import { Debris } from './Debris';
-import { SpikeStar } from './SpikeStar';
+import { KeycapSphere } from './KeycapSphere';
 
 /**
  * Feature flag for the 3D chains. Toggle to true to restore them instantly.
@@ -77,7 +77,7 @@ const RimLights = () => {
  */
 const CyberChromeScene = () => {
   const [compact, setCompact] = useState(false);
-  const [dpr, setDpr] = useState(1.5);
+  const [maxDpr, setMaxDpr] = useState(2);
 
   useEffect(() => {
     const query = window.matchMedia('(max-width: 768px)');
@@ -93,7 +93,7 @@ const CyberChromeScene = () => {
       style={{ position: 'fixed' }}
       eventSource={typeof document !== 'undefined' ? document.body : undefined}
       eventPrefix="client"
-      dpr={compact ? 1 : dpr}
+      dpr={[1, maxDpr]}
       camera={{ position: [0, 0, 10], fov: 35, near: 0.1, far: 60 }}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       onCreated={({ gl }) => {
@@ -101,14 +101,14 @@ const CyberChromeScene = () => {
         gl.toneMappingExposure = 1.05;
       }}
     >
-      <PerformanceMonitor onDecline={() => setDpr(1)} onIncline={() => setDpr(1.5)} />
+      <PerformanceMonitor onDecline={() => setMaxDpr(1.25)} onIncline={() => setMaxDpr(2)} />
       <AdaptiveDpr pixelated={false} />
       <Director />
       <RimLights />
       <Suspense fallback={null}>
         <ChromeEnvironment />
         {ChainsLayer ? <ChainsLayer compact={compact} /> : null}
-        <SpikeStar />
+        <KeycapSphere />
         <Debris count={compact ? 8 : 18} />
       </Suspense>
     </Canvas>
