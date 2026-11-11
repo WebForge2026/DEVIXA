@@ -57,7 +57,6 @@ export const generateMetadata = ({ params }: { params: { locale: string } }): Me
     authors: [{ name: site.legalEntity, url: site.url }],
     creator: site.legalEntity,
     publisher: site.legalEntity,
-    formatDetection: { telephone: true, email: true, address: false },
     robots: isIndexable ? { index: true, follow: true } : { index: false, follow: true },
     icons: {
       icon: [
