@@ -8,6 +8,7 @@ import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { setCursorMode } from '@/components/ui/cursorBus';
+import { SPHERE_HEIGHT, SPHERE_OFFSET_X } from '@/lib/heroLayout';
 import { motion } from '@/lib/store';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -313,8 +314,8 @@ export const KeycapSphere = () => {
 
     // Placement (desktop only — the scene does not mount the sphere below 1024 px): right of the headline.
     const diameter = 2 * (SPHERE_RADIUS + KEY_SIZE * 0.35);
-    const scale = (0.48 * viewport.height) / diameter;
-    restPosition.set(viewport.width * 0.31, 0.35, 0.4);
+    const scale = (SPHERE_HEIGHT * viewport.height) / diameter;
+    restPosition.set(viewport.width * SPHERE_OFFSET_X, 0.35, 0.4);
 
     // Leaves with the hero; on pages without a hero it is not shown at all.
     const presence = 1 - THREE.MathUtils.smoothstep(motion.hero, 0.55, 0.95);

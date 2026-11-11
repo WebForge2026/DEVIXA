@@ -8,6 +8,7 @@ import { motion } from '@/lib/store';
 import { damp } from '@/lib/utils';
 import { ChromeEnvironment } from './ChromeEnvironment';
 import { Debris } from './Debris';
+import { SPHERE_MIN_WIDTH } from '@/lib/heroLayout';
 import { KeycapSphere } from './KeycapSphere';
 
 /**
@@ -82,7 +83,7 @@ const CyberChromeScene = () => {
 
   useEffect(() => {
     // The keycap sphere is desktop-only (Tailwind lg breakpoint).
-    const desktopQuery = window.matchMedia('(min-width: 1024px)');
+    const desktopQuery = window.matchMedia(`(min-width: ${SPHERE_MIN_WIDTH}px)`);
     const updateDesktop = () => setDesktop(desktopQuery.matches);
     updateDesktop();
     desktopQuery.addEventListener('change', updateDesktop);

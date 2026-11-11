@@ -3,6 +3,7 @@
 import { gsap } from 'gsap';
 import { ArrowDownRight, ArrowRight } from 'lucide-react';
 import { useEffect, useRef } from 'react';
+import { SPHERE_MIN_WIDTH, sphereLeftEdge } from '@/lib/heroLayout';
 import type { Dictionary } from '@/lib/i18n/types';
 import { MagneticButton } from '@/components/ui/MagneticButton';
 
@@ -15,6 +16,31 @@ const SPECS = [
 
 export const Hero = ({ hero }: { hero: Dictionary['hero'] }) => {
   const root = useRef<HTMLElement>(null);
+  const title = useRef<HTMLHeadingElement>(null);
+
+  // Desktop: shrink the headline just enough that its longest line ends before the keycap sphere.
+  // Long translations (e.g. Bulgarian) would otherwise run under it, where the outlined line vanishes.
+  useEffect(() => {
+    const h1 = title.current;
+    if (!h1) return;
+    const GAP = 32;
+    const fit = () => {
+      h1.style.fontSize = '';
+      if (window.innerWidth < SPHERE_MIN_WIDTH) return;
+      const lines = [...h1.querySelectorAll<HTMLElement>('[data-line] > span')];
+      const right = Math.max(...lines.map((line) => line.offsetLeft + line.offsetWidth));
+      const left = h1.getBoundingClientRect().left;
+      const available = sphereLeftEdge(window.innerWidth, window.innerHeight) - GAP - left;
+      const width = right - (lines[0]?.offsetLeft ?? 0);
+      if (width <= available || width <= 0) return;
+      const size = parseFloat(getComputedStyle(h1).fontSize) * (available / width);
+      h1.style.fontSize = `${Math.floor(size)}px`;
+    };
+    fit();
+    document.fonts?.ready.then(fit);
+    window.addEventListener('resize', fit);
+    return () => window.removeEventListener('resize', fit);
+  }, [hero.headline]);
 
   useEffect(() => {
     const node = root.current;
@@ -47,7 +73,7 @@ export const Hero = ({ hero }: { hero: Dictionary['hero'] }) => {
 
       <div className="mx-auto w-full max-w-[1600px]">
         <div data-rule className="mb-6 h-px w-full bg-fg" />
-        <h1 className="type-display text-[clamp(2.3rem,7.4vw,8.75rem)]">
+        <h1 ref={title} className="type-display text-[clamp(2.3rem,7.4vw,8.75rem)]">
           {hero.headline.map((line, i) => (
             <span key={line} data-line className="block overflow-hidden pb-[0.04em]">
               <span className={i === 1 ? 'inline-block type-outline' : 'inline-block'}>{line}</span>
