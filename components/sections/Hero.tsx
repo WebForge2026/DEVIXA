@@ -74,11 +74,25 @@ export const Hero = ({ hero }: { hero: Dictionary['hero'] }) => {
       <div className="mx-auto w-full max-w-[1600px]">
         <div data-rule className="mb-6 h-px w-full bg-fg" />
         <h1 ref={title} className="type-display text-[clamp(2.3rem,7.4vw,8.75rem)]">
-          {hero.headline.map((line, i) => (
-            <span key={line} data-line className="block overflow-hidden pb-[0.04em]">
-              <span className={i === 1 ? 'inline-block type-outline' : 'inline-block'}>{line}</span>
-            </span>
-          ))}
+          {hero.headline.map((line, i) => {
+            const isLast = i === hero.headline.length - 1;
+            const split = line.lastIndexOf(' ');
+            return (
+              <span key={line} data-line className="block overflow-hidden pb-[0.04em]">
+                <span className={i === 1 ? 'inline-block type-outline' : 'inline-block'}>
+                  {isLast ? (
+                    <>
+                      {split > -1 ? line.slice(0, split + 1) : null}
+                      {/* Final word in crimson, matching the red keycaps on the sphere. */}
+                      <span className="text-[#DC2626]">{split > -1 ? line.slice(split + 1) : line}</span>
+                    </>
+                  ) : (
+                    line
+                  )}
+                </span>
+              </span>
+            );
+          })}
         </h1>
         <div data-rule className="mt-6 h-px w-full bg-fg" />
       </div>

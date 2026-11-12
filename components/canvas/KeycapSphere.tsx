@@ -1,6 +1,6 @@
 'use client';
 
-import { useFrame, useThree } from '@react-three/fiber';
+import { useFrame, useThree, type RootState } from '@react-three/fiber';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
@@ -21,11 +21,11 @@ const SPHERE_RADIUS = 3.2;
 const KEY_SIZE = 1;
 const KEY_GAP = 0.12;
 /** Share of crimson and light accent keys. */
-const ACCENT_SHARE = 0.11;
+const ACCENT_SHARE = 0.2;
 const LIGHT_SHARE = 0.03;
 
 const KEY_DARK = new THREE.Color('#111215');
-const KEY_ACCENT = new THREE.Color('#FF2A2A');
+const KEY_ACCENT = new THREE.Color('#DC2626');
 const KEY_LIGHT = new THREE.Color('#d6d9df');
 const LEGEND_ON_DARK = new THREE.Color('#c9ccd3');
 const LEGEND_ON_LIGHT = new THREE.Color('#15161a');
@@ -49,6 +49,44 @@ const SCROLL_TURN = Math.PI * 1.5;
 const SCROLL_DEPTH = 3;
 /** Pointer tilt lerp per 60 fps frame. */
 const TILT_LERP = 0.05;
+
+/* ---------------------------------------------------------------------------
+   Hover dispersion tuning (keys part around the cursor and float weightlessly)
+--------------------------------------------------------------------------- */
+/** Key base radius (where each key sits) and outer radius of the invisible hit sphere (key tops). */
+const BASE_RADIUS = SPHERE_RADIUS - KEY_SIZE * 0.32;
+const HIT_RADIUS = BASE_RADIUS + KEY_SIZE * 0.63;
+/** Keys within this distance of the cursor (measured on the key shell) part. */
+const INFLUENCE_RADIUS = 0.5 * SPHERE_RADIUS;
+/** Maximum lift along each key's outward surface normal. */
+const MAX_PUSH = 0.95;
+/** Maximum sideways push away from the cursor, opening a gap around it. */
+const SPREAD_FACTOR = 0.45;
+/** Parted keys lean away from the cursor by up to this angle (rad). */
+const FLARE_TILT = 0.35;
+/** Weightless float at full influence: position wobble and rotation wobble (rad). */
+const FLOAT_POSITION = 0.025 * SPHERE_RADIUS;
+const FLOAT_TILT = 0.22;
+/** Exponential damping rate (1/s) for parting and reassembling: alpha = 1 - exp(-DAMPING * dt). */
+const DAMPING = 7;
+/** Idle spin multiplier while hovered, and its damping rate (1/s). */
+const HOVER_SPIN = 0.04;
+const SPIN_DAMPING = 3;
+
+// Scratch objects for the render loop — allocated once, never per frame.
+const _pointer = new THREE.Vector2();
+const _hitSphere = new THREE.Sphere();
+const _hitWorld = new THREE.Vector3();
+const _hitLocal = new THREE.Vector3();
+const _tangent = new THREE.Vector3();
+const _flareAxis = new THREE.Vector3();
+const _position = new THREE.Vector3();
+const _quaternion = new THREE.Quaternion();
+const _flareQ = new THREE.Quaternion();
+const _wobbleQ = new THREE.Quaternion();
+const _unitScale = new THREE.Vector3(1, 1, 1);
+const _keyMatrix = new THREE.Matrix4();
+const _legendMatrix = new THREE.Matrix4();
 
 const smoothingAlpha = (factor: number, delta: number) => 1 - Math.pow(1 - factor, Math.min(delta, 0.1) * 60);
 
@@ -177,6 +215,12 @@ const buildSlots = (): KeySlot[] => {
   return slots;
 };
 
+/** Legend placement on a key's dished top; rotated so it reads upright toward the sphere's north. */
+const LEGEND_ON_TOP = new THREE.Matrix4()
+  .makeTranslation(0, KEY_SIZE * 0.632, -KEY_SIZE * 0.04)
+  .multiply(new THREE.Matrix4().makeRotationX(-Math.PI / 2))
+  .multiply(new THREE.Matrix4().makeRotationZ(Math.PI));
+
 /* ---------------------------------------------------------------------------
    Lights
 --------------------------------------------------------------------------- */
@@ -257,16 +301,11 @@ export const KeycapSphere = () => {
     const mesh = keys.current;
     if (!mesh) return;
     const legendMesh = legends.current;
-    // Legend sits flat on the dished top; rotated so it reads upright toward the sphere's north.
-    const onTop = new THREE.Matrix4()
-      .makeTranslation(0, KEY_SIZE * 0.632, -KEY_SIZE * 0.04)
-      .multiply(new THREE.Matrix4().makeRotationX(-Math.PI / 2))
-      .multiply(new THREE.Matrix4().makeRotationZ(Math.PI));
     const m = new THREE.Matrix4();
     slots.forEach((slot, i) => {
       mesh.setMatrixAt(i, slot.matrix);
       mesh.setColorAt(i, slot.color);
-      legendMesh?.setMatrixAt(i, m.copy(slot.matrix).multiply(onTop));
+      legendMesh?.setMatrixAt(i, m.copy(slot.matrix).multiply(LEGEND_ON_TOP));
       legendMesh?.setColorAt(i, slot.legend);
     });
     mesh.instanceMatrix.needsUpdate = true;
@@ -286,6 +325,24 @@ export const KeycapSphere = () => {
     },
     [geometry, material, legendGeometry, legendMaterial, atlas],
   );
+
+  /** Rest pose per key (cached once) and the current hover influence 0..1 per key. */
+  const rest = useMemo(
+    () => ({
+      position: slots.map((slot) => new THREE.Vector3().setFromMatrixPosition(slot.matrix)),
+      quaternion: slots.map((slot) => {
+        const q = new THREE.Quaternion();
+        slot.matrix.decompose(new THREE.Vector3(), q, new THREE.Vector3());
+        return q;
+      }),
+      normal: slots.map((slot) => new THREE.Vector3().setFromMatrixPosition(slot.matrix).normalize()),
+      influence: new Float32Array(slots.length),
+      displaced: new Uint8Array(slots.length),
+    }),
+    [slots],
+  );
+  /** Hover state: last cursor point on the key shell (sphere-local), spin multiplier, anything still moving. */
+  const hover = useRef({ point: new THREE.Vector3(), spin: 1, settled: true });
 
   /** Scroll progress through the hero, smoothed by GSAP scrub. */
   const scroll = useRef({ progress: 0 });
@@ -337,13 +394,109 @@ export const KeycapSphere = () => {
 
     // Spin: idle drift + scroll-driven turn through a spring (momentum + slight overshoot).
     const s = spring.current;
-    if (!motion.reducedMotion) s.idle += dt * IDLE_SPIN;
+    const h = hover.current;
+    if (!motion.reducedMotion) s.idle += dt * IDLE_SPIN * h.spin;
     const goal = s.idle + progress * SCROLL_TURN + motion.pointer.x * 0.25;
     s.velocity += (goal - s.angle) * 38 * dt;
     s.velocity *= Math.exp(-7.5 * dt);
     s.angle += s.velocity * dt;
     spin.current.rotation.y = s.angle;
+
+    disperse(state, dt, t, presence);
   });
+
+  /** Radial dispersion: keys near the cursor lift, part and float; they reassemble when it leaves. */
+  const disperse = (state: RootState, dt: number, t: number, presence: number) => {
+    const h = hover.current;
+    const keysMesh = keys.current;
+    const legendMesh = legends.current;
+    if (!spin.current || !keysMesh || !legendMesh) return;
+
+    // Ray from the camera through the cursor against an invisible sphere around the key tops,
+    // so hovering also works over the gaps between keys.
+    spin.current.updateWorldMatrix(true, false);
+    _hitSphere.center.setFromMatrixPosition(spin.current.matrixWorld);
+    _hitSphere.radius = HIT_RADIUS * spin.current.matrixWorld.getMaxScaleOnAxis();
+    _pointer.set(motion.pointer.x, motion.pointer.y);
+    state.raycaster.setFromCamera(_pointer, state.camera);
+    const hovered = presence > 0.5 && !motion.reducedMotion && state.raycaster.ray.intersectSphere(_hitSphere, _hitWorld) !== null;
+    if (hovered) {
+      // Into sphere-local space, then onto the shell the keys sit on, so distances are along the surface.
+      _hitLocal.copy(_hitWorld);
+      spin.current.worldToLocal(_hitLocal);
+      h.point.copy(_hitLocal).setLength(BASE_RADIUS);
+    }
+
+    h.spin += ((hovered ? HOVER_SPIN : 1) - h.spin) * (1 - Math.exp(-SPIN_DAMPING * dt));
+    if (!hovered && h.settled) return;
+
+    const alpha = 1 - Math.exp(-DAMPING * dt);
+    let moving = false;
+    let changed = false;
+
+    for (let i = 0; i < rest.influence.length; i += 1) {
+      const basePos = rest.position[i]!;
+      const normal = rest.normal[i]!;
+      let goal = 0;
+      if (hovered) {
+        const d = basePos.distanceTo(h.point);
+        if (d < INFLUENCE_RADIUS) goal = (1 - d / INFLUENCE_RADIUS) ** 2;
+      }
+      const w = rest.influence[i]! + (goal - rest.influence[i]!) * alpha;
+
+      if (w < 1e-4 && goal === 0) {
+        rest.influence[i] = 0;
+        if (rest.displaced[i]) {
+          // Snap the last step exactly back to the rest pose.
+          _keyMatrix.compose(basePos, rest.quaternion[i]!, _unitScale);
+          keysMesh.setMatrixAt(i, _keyMatrix);
+          legendMesh.setMatrixAt(i, _legendMatrix.multiplyMatrices(_keyMatrix, LEGEND_ON_TOP));
+          rest.displaced[i] = 0;
+          changed = true;
+        }
+        continue;
+      }
+      rest.influence[i] = w;
+      rest.displaced[i] = 1;
+      moving = true;
+      changed = true;
+
+      // Tangential direction away from the cursor (component of base - hit perpendicular to the normal).
+      _tangent.copy(basePos).sub(h.point);
+      _tangent.addScaledVector(normal, -_tangent.dot(normal));
+      const tangentLength = _tangent.length();
+      if (tangentLength > 1e-5) _tangent.multiplyScalar(1 / tangentLength);
+      else _tangent.set(0, 0, 0);
+
+      const wobble = Math.sin(t * 2.4 + i * 1.37);
+      const sway = Math.cos(t * 1.9 + i * 0.83);
+
+      // Position: lift along the normal, spread away from the cursor, float.
+      _position
+        .copy(basePos)
+        .addScaledVector(normal, (MAX_PUSH + wobble * FLOAT_POSITION) * w)
+        .addScaledVector(_tangent, SPREAD_FACTOR * w);
+
+      // Rotation: lean away from the cursor (axis normal × tangent) plus a weightless sway around the tangent.
+      _quaternion.copy(rest.quaternion[i]!);
+      if (tangentLength > 1e-5) {
+        _flareAxis.crossVectors(normal, _tangent).normalize();
+        _flareQ.setFromAxisAngle(_flareAxis, (FLARE_TILT + wobble * FLOAT_TILT) * w);
+        _wobbleQ.setFromAxisAngle(_tangent, sway * FLOAT_TILT * w);
+        _quaternion.premultiply(_flareQ).premultiply(_wobbleQ);
+      }
+
+      _keyMatrix.compose(_position, _quaternion, _unitScale);
+      keysMesh.setMatrixAt(i, _keyMatrix);
+      legendMesh.setMatrixAt(i, _legendMatrix.multiplyMatrices(_keyMatrix, LEGEND_ON_TOP));
+    }
+
+    if (changed) {
+      keysMesh.instanceMatrix.needsUpdate = true;
+      legendMesh.instanceMatrix.needsUpdate = true;
+    }
+    h.settled = !moving;
+  };
 
   return (
     <group ref={root}>
@@ -354,6 +507,7 @@ export const KeycapSphere = () => {
           <instancedMesh
             ref={keys}
             args={[geometry, material, slots.length]}
+            frustumCulled={false}
             onPointerOver={() => setCursorMode('core')}
             onPointerOut={() => setCursorMode('default')}
             onClick={() => {
@@ -361,7 +515,7 @@ export const KeycapSphere = () => {
             }}
           />
           {/* All legends: one draw call, glyph picked per instance from the atlas */}
-          <instancedMesh ref={legends} args={[legendGeometry, legendMaterial, slots.length]} raycast={() => null} />
+          <instancedMesh ref={legends} args={[legendGeometry, legendMaterial, slots.length]} raycast={() => null} frustumCulled={false} />
         </group>
       </group>
     </group>
