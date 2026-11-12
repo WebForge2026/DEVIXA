@@ -16,7 +16,7 @@ export const SpotlightCard = ({ children, className, beam = false }: { children:
   };
 
   return (
-    <div ref={ref} onPointerMove={onPointerMove} data-cursor="lens" className={cn('spotlight-card group relative isolate overflow-hidden border border-line/25 bg-panel/70 backdrop-blur-md', beam && 'border-beam', className)}>
+    <div ref={ref} onPointerMove={onPointerMove} data-cursor="lens" className={cn('spotlight-card group relative isolate overflow-hidden rounded-[var(--card-radius,0px)] border border-line/25 bg-panel/70 backdrop-blur-md', beam && 'border-beam', className)}>
       <div aria-hidden className="spotlight-glow pointer-events-none absolute inset-0 -z-10 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
       {children}
     </div>

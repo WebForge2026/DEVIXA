@@ -88,3 +88,71 @@ create policy "service role reads estimates"
 
 -- No SELECT / UPDATE / DELETE policies exist for anon or authenticated:
 -- with RLS enabled, those operations are denied by default.
+
+-- =============================================================================
+-- ADMIN COMMAND CENTER (run after the section above; safe to re-run)
+-- All admin tables are service-role only: RLS on, no policies for anon/authenticated.
+-- =============================================================================
+
+-- CRM fields on existing lead tables
+alter table public.leads add column if not exists notes text;
+alter table public.leads add column if not exists locale text check (locale in ('de', 'en', 'bg'));
+alter table public.leads drop constraint if exists leads_status_check;
+alter table public.leads add constraint leads_status_check
+  check (status in ('new', 'contacted', 'proposal', 'won', 'archived', 'qualified', 'lost', 'spam'));
+
+alter table public.project_estimates add column if not exists status text not null default 'new'
+  check (status in ('new', 'contacted', 'proposal', 'won', 'archived'));
+alter table public.project_estimates add column if not exists notes text;
+alter table public.project_estimates add column if not exists price_low integer check (price_low >= 0);
+alter table public.project_estimates add column if not exists price_high integer check (price_high >= 0);
+alter table public.project_estimates add column if not exists locale text check (locale in ('de', 'en', 'bg'));
+
+drop policy if exists "service role manages estimates" on public.project_estimates;
+create policy "service role manages estimates"
+  on public.project_estimates for update
+  to service_role
+  using (true) with check (true);
+
+-- Public insert policy must keep new rows in status "new"
+drop policy if exists "public can submit estimates" on public.project_estimates;
+create policy "public can submit estimates"
+  on public.project_estimates for insert
+  to anon, authenticated
+  with check (status = 'new');
+
+-- Cookieless telemetry: daily-rotating visitor hash, no IP, no user agent
+create table if not exists public.site_events (
+  id         bigserial primary key,
+  created_at timestamptz not null default now(),
+  type       text not null check (type in ('pageview', 'calc_view', 'calc_interact')),
+  path       text not null check (char_length(path) <= 200),
+  locale     text not null check (locale in ('de', 'en', 'bg')),
+  visitor    text not null check (char_length(visitor) <= 40)
+);
+create index if not exists site_events_created_at_idx on public.site_events (created_at desc);
+
+create table if not exists public.site_presence (
+  visitor   text primary key check (char_length(visitor) <= 40),
+  path      text not null check (char_length(path) <= 200),
+  last_seen timestamptz not null default now()
+);
+create index if not exists site_presence_last_seen_idx on public.site_presence (last_seen desc);
+
+-- CMS: one row ("live") holding published texts, media and design settings
+create table if not exists public.site_content (
+  id         text primary key default 'live',
+  data       jsonb not null,
+  updated_at timestamptz not null default now()
+);
+
+alter table public.site_events enable row level security;
+alter table public.site_presence enable row level security;
+alter table public.site_content enable row level security;
+revoke all on public.site_events, public.site_presence, public.site_content from anon, authenticated;
+grant all on public.site_events, public.site_presence, public.site_content to service_role;
+grant usage, select on sequence public.site_events_id_seq to service_role;
+
+-- Optional housekeeping (run periodically, e.g. via pg_cron): keep 13 months of telemetry
+-- delete from public.site_events where created_at < now() - interval '13 months';
+-- delete from public.site_presence where last_seen < now() - interval '1 day';

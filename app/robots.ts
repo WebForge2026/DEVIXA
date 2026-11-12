@@ -6,7 +6,7 @@ import { site } from '@/lib/site';
 const robots = (): MetadataRoute.Robots =>
   isIndexable
     ? {
-        rules: [{ userAgent: '*', allow: '/' }],
+        rules: [{ userAgent: '*', allow: '/', disallow: ['/admin', '/api/'] }],
         sitemap: `${site.url}/sitemap.xml`,
         host: site.url,
       }

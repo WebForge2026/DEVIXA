@@ -83,7 +83,7 @@ export const de: LegalDocs = {
       {
         heading: '2. Überblick',
         body: [
-          'Wir verarbeiten personenbezogene Daten nur, soweit dies für den Betrieb dieser Website und die Beantwortung Ihrer Anfragen erforderlich ist. Wir setzen keine Analyse- oder Tracking-Tools, keine Werbe-Cookies und keine Social-Media-Plugins ein.',
+          'Wir verarbeiten personenbezogene Daten nur, soweit dies für den Betrieb dieser Website und die Beantwortung Ihrer Anfragen erforderlich ist. Wir setzen keine Tracking-Tools von Drittanbietern, keine Werbe-Cookies und keine Social-Media-Plugins ein; Besuche zählen wir anonym und ohne Cookies auf unserem eigenen Server (Abschnitt 7).',
         ],
       },
       {
@@ -115,26 +115,34 @@ export const de: LegalDocs = {
         ],
       },
       {
-        heading: '7. Schriftarten',
+        heading: '7. Anonyme Besucherstatistik (ohne Cookies)',
+        body: [
+          'Um die Nutzung dieser Website zu verstehen, zählen wir Seitenaufrufe auf unserem eigenen Server — ohne Cookies und ohne Speicherung auf Ihrem Gerät. Erfasst werden die aufgerufene Seite, die Sprache, der Zeitpunkt und ob der Kostenrechner angesehen oder benutzt wurde.',
+          'Zur Unterscheidung von Besuchen bilden wir aus IP-Adresse und Browserkennung zusammen mit einem geheimen, täglich wechselnden Wert eine verkürzte Prüfsumme (Hash). IP-Adresse und Browserkennung selbst werden nicht gespeichert; ein Wiedererkennen über Tage hinweg oder eine Zuordnung zu Ihrer Person ist nicht möglich. Senden Sie das Signal „Do Not Track“ oder „Global Privacy Control“, findet keine Zählung statt.',
+          'Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Verbesserung unseres Angebots). Die Statistikdaten werden nach spätestens 13 Monaten gelöscht.',
+        ],
+      },
+      {
+        heading: '8. Schriftarten',
         body: [
           'Die auf dieser Website verwendeten Schriftarten werden lokal von unserem Server ausgeliefert. Es findet keine Verbindung zu Servern von Google oder anderen Schriftanbietern statt.',
         ],
       },
       {
-        heading: '8. Externe Links',
+        heading: '9. Externe Links',
         body: [
           'Unsere Website enthält Links zu Websites von Kundenprojekten. Erst wenn Sie einen solchen Link anklicken, werden Daten an den jeweiligen Betreiber übertragen. Für die Datenverarbeitung dort ist der jeweilige Betreiber verantwortlich.',
         ],
       },
       {
-        heading: '9. Empfänger und Übermittlung in Drittländer',
+        heading: '10. Empfänger und Übermittlung in Drittländer',
         body: [
           'Ihre Daten erhalten nur unsere Mitarbeiter, soweit sie diese zur Bearbeitung Ihrer Anfrage benötigen, sowie die genannten Auftragsverarbeiter (Hosting, Datenbank). Eine Weitergabe zu Werbezwecken findet nicht statt.',
           'Sofern ein Dienstleister seinen Sitz außerhalb der EU hat, erfolgt eine Übermittlung nur auf Grundlage eines Angemessenheitsbeschlusses der EU-Kommission (z. B. EU-U.S. Data Privacy Framework) oder der EU-Standardvertragsklauseln nach Art. 46 Abs. 2 lit. c DSGVO.',
         ],
       },
       {
-        heading: '10. Ihre Rechte',
+        heading: '11. Ihre Rechte',
         body: [
           'Sie haben das Recht auf Auskunft (Art. 15 DSGVO), Berichtigung (Art. 16), Löschung (Art. 17), Einschränkung der Verarbeitung (Art. 18), Datenübertragbarkeit (Art. 20) sowie das Recht, eine erteilte Einwilligung jederzeit mit Wirkung für die Zukunft zu widerrufen (Art. 7 Abs. 3 DSGVO).',
           'Widerspruchsrecht: Soweit wir Ihre Daten auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO verarbeiten, können Sie aus Gründen, die sich aus Ihrer besonderen Situation ergeben, jederzeit Widerspruch gegen die Verarbeitung einlegen (Art. 21 DSGVO).',
@@ -142,23 +150,23 @@ export const de: LegalDocs = {
         ],
       },
       {
-        heading: '11. Beschwerderecht bei einer Aufsichtsbehörde',
+        heading: '12. Beschwerderecht bei einer Aufsichtsbehörde',
         body: [
           'Sie haben das Recht, sich bei einer Datenschutz-Aufsichtsbehörde zu beschweren — insbesondere in dem Mitgliedstaat Ihres Aufenthaltsorts, Ihres Arbeitsplatzes oder des mutmaßlichen Verstoßes. Für uns zuständig ist die bulgarische Kommission für den Schutz personenbezogener Daten (Комисия за защита на личните данни), бул. „Проф. Цветан Лазаров“ 2, 1592 Sofia, www.cpdp.bg.',
         ],
       },
       {
-        heading: '12. Datensicherheit',
+        heading: '13. Datensicherheit',
         body: [
           'Diese Website nutzt eine TLS-Verschlüsselung. Sie erkennen eine verschlüsselte Verbindung am Schloss-Symbol in der Adresszeile Ihres Browsers. Der Zugriff auf gespeicherte Anfragen ist auf berechtigte Personen beschränkt.',
         ],
       },
       {
-        heading: '13. Keine automatisierte Entscheidungsfindung',
+        heading: '14. Keine automatisierte Entscheidungsfindung',
         body: ['Eine automatisierte Entscheidungsfindung einschließlich Profiling im Sinne von Art. 22 DSGVO findet nicht statt.'],
       },
       {
-        heading: '14. Änderungen',
+        heading: '15. Änderungen',
         body: [
           'Wir passen diese Datenschutzerklärung an, wenn sich die Rechtslage oder unsere Datenverarbeitung ändert. Es gilt die jeweils auf dieser Seite veröffentlichte Fassung.',
         ],

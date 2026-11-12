@@ -13,6 +13,7 @@ import { TrustRail } from '@/components/sections/TrustRail';
 import type { Metadata } from 'next';
 import { htmlLang, isLocale, type Locale } from '@/lib/i18n/config';
 import { pageMetadata } from '@/lib/seo';
+import { getPublishedContent, getSiteDictionary } from '@/lib/admin/content';
 import { getDictionary } from '@/lib/i18n';
 import { getArticles } from '@/lib/i18n/articles';
 
@@ -22,8 +23,8 @@ export const generateMetadata = ({ params }: { params: { locale: string } }): Me
   return pageMetadata({ locale: params.locale, path: '', title: meta.title, description: meta.description, absoluteTitle: true });
 };
 
-const HomePage = ({ params }: { params: { locale: Locale } }) => {
-  const dict = getDictionary(params.locale);
+const HomePage = async ({ params }: { params: { locale: Locale } }) => {
+  const [dict, content] = await Promise.all([getSiteDictionary(params.locale), getPublishedContent()]);
 
   return (
     <>
@@ -33,7 +34,7 @@ const HomePage = ({ params }: { params: { locale: Locale } }) => {
         <TrustRail trust={dict.trust} />
         <Journey journey={dict.journey} />
         <Services locale={params.locale} services={dict.services} />
-        <Projects projects={dict.projects} />
+        <Projects projects={dict.projects} media={content.media} />
         <Process process={dict.process} />
         <Estimator estimator={dict.estimator} contact={dict.contact} intlLocale={htmlLang[params.locale]} />
         <Insights locale={params.locale} insights={dict.insights} articles={getArticles(params.locale)} />

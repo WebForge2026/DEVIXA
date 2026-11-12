@@ -155,7 +155,7 @@
 
   /* Spotlight card + rotating border beam */
   .spotlight-glow {
-    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgb(255 42 42 / 0.16), transparent 60%);
+    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgb(var(--accent-rgb, 255 42 42) / var(--glow-alpha, 0.16)), transparent 60%);
   }
   .border-beam::before {
     content: '';
@@ -234,6 +234,15 @@
 
   .field {
     @apply w-full border-0 border-b border-line/30 bg-transparent px-0 py-3 font-mono text-sm text-fg placeholder:text-muted/60 focus:border-crimson focus:outline-none focus:ring-0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 

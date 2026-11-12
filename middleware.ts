@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
+import { ADMIN_COOKIE, verifySessionToken } from '@/lib/admin/auth';
 import { defaultLocale, isLocale, locales, type Locale } from '@/lib/i18n/config';
 
 const COOKIE = 'NEXT_LOCALE';
@@ -22,9 +23,22 @@ const preferredLocale = (request: NextRequest): Locale => {
   return fromAcceptLanguage(request.headers.get('accept-language') ?? '') ?? defaultLocale;
 };
 
-export const middleware = (request: NextRequest) => {
+/** /admin: no locale prefix; everything except the login page needs a valid session. */
+const guardAdmin = async (request: NextRequest) => {
+  const { pathname } = request.nextUrl;
+  if (pathname === '/admin/login') return NextResponse.next();
+  const session = await verifySessionToken(request.cookies.get(ADMIN_COOKIE)?.value);
+  if (session) return NextResponse.next();
+  const url = request.nextUrl.clone();
+  url.pathname = '/admin/login';
+  url.search = pathname === '/admin' ? '' : `?next=${encodeURIComponent(pathname)}`;
+  return NextResponse.redirect(url);
+};
+
+export const middleware = async (request: NextRequest) => {
   const { pathname } = request.nextUrl;
   const first = pathname.split('/')[1] ?? '';
+  if (first === 'admin') return guardAdmin(request);
 
   if (locales.some((locale) => locale === first)) {
     const response = NextResponse.next();

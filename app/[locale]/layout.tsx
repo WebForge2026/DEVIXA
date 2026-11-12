@@ -9,7 +9,11 @@ import { Header } from '@/components/sections/Header';
 import { Cursor } from '@/components/ui/Cursor';
 import { Grain } from '@/components/ui/Grain';
 import { htmlLang, isLocale, locales } from '@/lib/i18n/config';
+import { getPublishedContent, getSiteDictionary } from '@/lib/admin/content';
 import { getDictionary } from '@/lib/i18n';
+import { AdminShortcut } from '@/components/providers/AdminShortcut';
+import { Telemetry } from '@/components/providers/Telemetry';
+import { themeStyle } from '@/lib/admin/theme';
 import { GOOGLE_SITE_VERIFICATION, site } from '@/lib/site';
 import { isIndexable } from '@/lib/seo';
 import { Analytics } from '@/components/providers/Analytics';
@@ -75,9 +79,10 @@ export const generateMetadata = ({ params }: { params: { locale: string } }): Me
   };
 };
 
-const RootLayout = ({ children, params }: { children: ReactNode; params: { locale: string } }) => {
+const RootLayout = async ({ children, params }: { children: ReactNode; params: { locale: string } }) => {
   if (!isLocale(params.locale)) notFound();
-  const dict = getDictionary(params.locale);
+  const [dict, content] = await Promise.all([getSiteDictionary(params.locale), getPublishedContent()]);
+  const theme = themeStyle(content.theme);
 
   const organization = {
     '@context': 'https://schema.org',
@@ -104,8 +109,10 @@ const RootLayout = ({ children, params }: { children: ReactNode; params: { local
   };
 
   return (
-    <html lang={htmlLang[params.locale]} translate="no" data-act="light" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
+    <html lang={htmlLang[params.locale]} translate="no" data-act="light" data-sphere-red={theme.sphereRed} className={`${display.variable} ${sans.variable} ${mono.variable}`}>
       <body>
+        {/* Admin design settings (defaults reproduce the original look). */}
+        <style dangerouslySetInnerHTML={{ __html: theme.css }} />
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:bg-crimson focus:px-4 focus:py-2 focus:text-obsidian">
           Skip to content
         </a>
@@ -125,6 +132,8 @@ const RootLayout = ({ children, params }: { children: ReactNode; params: { local
         </SmoothScroll>
         <CookieConsent locale={params.locale} consent={dict.consent} privacyLabel={dict.footer.privacy} />
         <Analytics />
+        <Telemetry />
+        <AdminShortcut />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify([organization, website]) }} />
       </body>
     </html>

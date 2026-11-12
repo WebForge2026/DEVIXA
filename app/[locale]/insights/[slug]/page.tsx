@@ -7,7 +7,7 @@ import { Footer } from '@/components/sections/Footer';
 import { Insights } from '@/components/sections/Insights';
 import { MagneticButton } from '@/components/ui/MagneticButton';
 import { SectionLabel } from '@/components/ui/SectionLabel';
-import { getDictionary } from '@/lib/i18n';
+import { getSiteDictionary } from '@/lib/admin/content';
 import { getArticle, getArticles } from '@/lib/i18n/articles';
 import { articleSlugs } from '@/lib/i18n/articles/types';
 import { htmlLang, isLocale, locales } from '@/lib/i18n/config';
@@ -16,18 +16,17 @@ import { site } from '@/lib/site';
 
 type Params = { locale: string; slug: string };
 
-export const dynamicParams = false;
 
 export const generateStaticParams = () => locales.flatMap((locale) => articleSlugs.map((slug) => ({ locale, slug })));
 
-const load = ({ locale, slug }: Params) => {
+const load = async ({ locale, slug }: Params) => {
   if (!isLocale(locale)) return null;
   const article = getArticle(locale, slug);
-  return article ? { locale, article, dict: getDictionary(locale) } : null;
+  return article ? { locale, article, dict: await getSiteDictionary(locale) } : null;
 };
 
-export const generateMetadata = ({ params }: { params: Params }): Metadata => {
-  const found = load(params);
+export const generateMetadata = async ({ params }: { params: Params }): Promise<Metadata> => {
+  const found = await load(params);
   if (!found) return {};
   return pageMetadata({
     locale: found.locale,
@@ -38,8 +37,8 @@ export const generateMetadata = ({ params }: { params: Params }): Metadata => {
   });
 };
 
-const ArticlePage = ({ params }: { params: Params }) => {
-  const found = load(params);
+const ArticlePage = async ({ params }: { params: Params }) => {
+  const found = await load(params);
   if (!found) notFound();
   const { locale, article, dict } = found;
   const others = getArticles(locale).filter((a) => a.slug !== article.slug);

@@ -21,6 +21,7 @@ const SPHERE_RADIUS = 3.2;
 const KEY_SIZE = 1;
 const KEY_GAP = 0.12;
 /** Share of crimson and light accent keys. */
+/** Default share of crimson keys; the admin can override it (html[data-sphere-red]). */
 const ACCENT_SHARE = 0.2;
 const LIGHT_SHARE = 0.03;
 
@@ -167,6 +168,8 @@ type KeySlot = { matrix: THREE.Matrix4; color: THREE.Color; legend: THREE.Color;
  */
 const buildSlots = (): KeySlot[] => {
   const random = mulberry32(88);
+  const configured = Number(document.documentElement.dataset.sphereRed);
+  const accentShare = Number.isFinite(configured) && configured > 0 ? configured : ACCENT_SHARE;
   const pitch = KEY_SIZE + KEY_GAP;
   const rowStep = pitch / SPHERE_RADIUS; // angular height of one row
   const rows = Math.floor(Math.PI / rowStep);
@@ -195,7 +198,7 @@ const buildSlots = (): KeySlot[] => {
         .setPosition(up.clone().multiplyScalar(SPHERE_RADIUS - KEY_SIZE * 0.32));
 
       const roll = random();
-      const color = roll < ACCENT_SHARE ? KEY_ACCENT : roll < ACCENT_SHARE + LIGHT_SHARE ? KEY_LIGHT : KEY_DARK;
+      const color = roll < accentShare ? KEY_ACCENT : roll < accentShare + LIGHT_SHARE ? KEY_LIGHT : KEY_DARK;
       const legend = color === KEY_DARK ? LEGEND_ON_DARK : color === KEY_ACCENT ? LEGEND_ON_ACCENT : LEGEND_ON_LIGHT;
       slots.push({ matrix, color, legend, glyph: 0 });
     }

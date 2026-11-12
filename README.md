@@ -58,6 +58,19 @@ supabase/schema.sql         tables, constraints, RLS: anon INSERT only, reads fo
 - Google Search Console code: `lib/site.ts` → `GOOGLE_SITE_VERIFICATION` (or env var).
 - Analytics: `lib/analytics.ts` (env vars); GA4/GTM only load after opt-in in the cookie banner.
 
+## Admin Command Center
+
+- Hidden route **`/admin`** (not linked anywhere, `noindex`, blocked in robots.txt) or shortcut
+  **Ctrl/⌘ + Shift + A** (fallback **Alt + Shift + A**) on any public page.
+- Login: `ADMIN_EMAIL` / `ADMIN_PASSWORD` env vars; session = HMAC-signed HttpOnly cookie (12 h),
+  5 attempts / 10 min. Local `npm run dev` without env vars: `admin@devixa.de` / `devixa-admin-2026`.
+- Modules: Command Center (KPIs, trends, funnel, conversion gauge, 12-week heatmap), Live Analytics,
+  Leads & Quotes (CRM with search, filters, status, notes, lead inspector), Content & Media CMS
+  (texts per language, project images, design settings with reset).
+- Data: `lib/admin/store` — Supabase adapter (needs `SUPABASE_SERVICE_ROLE_KEY` + `supabase/schema.sql`)
+  or a JSON file in `.data/` for local development. `npm run admin:seed` writes demo data locally.
+- Telemetry is first-party and cookieless (`/api/t`): daily-rotating hash, no IP stored, DNT/GPC respected.
+
 ## Before going live
 
 1. Fill in the `null` fields in `lib/legal.ts` (address, managing director, ЕИК, VAT ID, hosting provider).

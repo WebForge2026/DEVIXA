@@ -115,6 +115,7 @@ export const Contact = ({ locale, contact }: { locale: Locale; contact: Dictiona
                 <FieldError id="message-error" show={invalid('message')} message={e.message} />
               </div>
               <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden />
+              <input type="hidden" name="locale" value={locale} />
               <label className="flex items-start gap-3 text-sm text-fg/75 md:col-span-2">
                 <input type="checkbox" name="consent" required className="mt-1 h-4 w-4 accent-[#FF2A2A]" aria-invalid={invalid('consent')} aria-describedby={invalid('consent') ? 'consent-error' : undefined} />
                 <span>

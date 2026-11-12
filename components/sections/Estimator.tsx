@@ -1,13 +1,14 @@
 'use client';
 
 import { Check } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 import { submitEstimate, type ActionState } from '@/app/actions/leads';
 import { estimateRange, formatEuro, marketRange, type FeatureId, type SystemType, type TimelineId } from '@/lib/estimate';
 import type { Dictionary } from '@/lib/i18n/types';
 import { cn } from '@/lib/utils';
 import { MagneticButton } from '@/components/ui/MagneticButton';
+import { track } from '@/lib/telemetry-client';
 import { SectionLabel } from '@/components/ui/SectionLabel';
 
 const SubmitButton = ({ label }: { label: string }) => {
@@ -29,6 +30,29 @@ export const Estimator = ({ estimator, contact, intlLocale }: EstimatorProps) =>
   const [state, action] = useFormState<ActionState, FormData>(submitEstimate, { status: 'idle' });
 
   const emailInvalid = state.status === 'error' && Boolean(state.fieldErrors?.contact_email?.length);
+  // Funnel telemetry for the admin panel: calculator seen, then first configuration change.
+  const sectionRef = useRef<HTMLElement>(null);
+  const interacted = useRef(false);
+  useEffect(() => {
+    const node = sectionRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        track('calc_view');
+        observer.disconnect();
+      },
+      { threshold: 0.35 },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+  const markInteraction = () => {
+    if (interacted.current) return;
+    interacted.current = true;
+    track('calc_interact');
+  };
+
   const range = useMemo(() => estimateRange(system, features, timeline), [system, features, timeline]);
   const market = useMemo(() => marketRange(system, features, timeline), [system, features, timeline]);
   const toggle = (id: FeatureId) => setFeatures((list) => (list.includes(id) ? list.filter((f) => f !== id) : [...list, id]));
@@ -40,7 +64,7 @@ export const Estimator = ({ estimator, contact, intlLocale }: EstimatorProps) =>
     );
 
   return (
-    <section id="estimate" aria-labelledby="estimate-title" className="relative px-4 py-28 md:px-8">
+    <section ref={sectionRef} id="estimate" aria-labelledby="estimate-title" className="relative px-4 py-28 md:px-8">
       <div className="mx-auto max-w-[1600px]">
         <SectionLabel index="05">{estimator.label}</SectionLabel>
         <h2 id="estimate-title" className="type-display mt-5 text-[clamp(1.8rem,4vw,4rem)]">
@@ -48,7 +72,7 @@ export const Estimator = ({ estimator, contact, intlLocale }: EstimatorProps) =>
         </h2>
         <p className="mt-4 max-w-xl text-fg/70">{estimator.intro}</p>
 
-        <form action={action} className="mt-12 grid gap-px border border-line/20 bg-line/20 lg:grid-cols-12">
+        <form action={action} onChange={markInteraction} className="mt-12 grid gap-px border border-line/20 bg-line/20 lg:grid-cols-12">
           <div className="space-y-10 bg-panel/80 p-6 backdrop-blur-md md:p-10 lg:col-span-7">
             <fieldset>
               <legend className="font-mono text-[10px] uppercase tracking-[0.25em] text-crimson">A · {estimator.systemType}</legend>
@@ -129,6 +153,7 @@ export const Estimator = ({ estimator, contact, intlLocale }: EstimatorProps) =>
                     aria-describedby={emailInvalid ? 'estimate-email-error' : undefined}
                   />
                   <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden />
+                  <input type="hidden" name="locale" value={intlLocale.slice(0, 2)} />
                   <div className="mt-6">
                     <SubmitButton label={estimator.submit} />
                   </div>

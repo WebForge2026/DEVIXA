@@ -81,7 +81,7 @@ export const en: LegalDocs = {
       {
         heading: '2. Overview',
         body: [
-          'We only process personal data where this is necessary to operate this website and to answer your enquiries. We do not use analytics or tracking tools, advertising cookies or social media plugins.',
+          'We only process personal data where this is necessary to operate this website and to answer your enquiries. We do not use third-party tracking tools, advertising cookies or social media plugins; we count visits anonymously and without cookies on our own server (section 7).',
         ],
       },
       {
@@ -113,24 +113,32 @@ export const en: LegalDocs = {
         ],
       },
       {
-        heading: '7. Fonts',
+        heading: '7. Anonymous visitor statistics (no cookies)',
+        body: [
+          'To understand how this website is used, we count page views on our own server — without cookies and without storing anything on your device. We record the page, the language, the time and whether the cost calculator was viewed or used.',
+          'To tell visits apart, we combine IP address and browser identifier with a secret value that changes daily and store only a shortened checksum (hash). The IP address and browser identifier themselves are not stored; recognising you across days or identifying you is not possible. If your browser sends "Do Not Track" or "Global Privacy Control", nothing is counted.',
+          'The legal basis is Art. 6(1)(f) GDPR (legitimate interest in improving our services). Statistics are deleted after 13 months at the latest.',
+        ],
+      },
+      {
+        heading: '8. Fonts',
         body: ['The fonts used on this website are served locally from our own server. No connection is made to Google or other font providers.'],
       },
       {
-        heading: '8. External links',
+        heading: '9. External links',
         body: [
           'Our website contains links to websites of client projects. Data is only transferred to the respective operator once you click such a link. That operator is responsible for any processing on their website.',
         ],
       },
       {
-        heading: '9. Recipients and transfers to third countries',
+        heading: '10. Recipients and transfers to third countries',
         body: [
           'Your data is only accessible to our staff insofar as they need it to handle your enquiry, and to the processors named above (hosting, database). We do not share data for advertising purposes.',
           'Where a service provider is based outside the EU, data is only transferred on the basis of an adequacy decision of the European Commission (e.g. the EU-U.S. Data Privacy Framework) or the EU standard contractual clauses pursuant to Art. 46(2)(c) GDPR.',
         ],
       },
       {
-        heading: '10. Your rights',
+        heading: '11. Your rights',
         body: [
           'You have the right of access (Art. 15 GDPR), rectification (Art. 16), erasure (Art. 17), restriction of processing (Art. 18) and data portability (Art. 20), as well as the right to withdraw any consent at any time with effect for the future (Art. 7(3) GDPR).',
           'Right to object: where we process your data on the basis of Art. 6(1)(f) GDPR, you may object to the processing at any time on grounds relating to your particular situation (Art. 21 GDPR).',
@@ -138,23 +146,23 @@ export const en: LegalDocs = {
         ],
       },
       {
-        heading: '11. Right to lodge a complaint',
+        heading: '12. Right to lodge a complaint',
         body: [
           'You have the right to lodge a complaint with a data protection supervisory authority, in particular in the member state of your habitual residence, place of work or the place of the alleged infringement. The authority responsible for us is the Bulgarian Commission for Personal Data Protection (Комисия за защита на личните данни), 2 Prof. Tsvetan Lazarov Blvd., 1592 Sofia, www.cpdp.bg.',
         ],
       },
       {
-        heading: '12. Data security',
+        heading: '13. Data security',
         body: [
           'This website uses TLS encryption, which you can recognise by the padlock symbol in your browser’s address bar. Access to stored enquiries is restricted to authorised persons.',
         ],
       },
       {
-        heading: '13. No automated decision-making',
+        heading: '14. No automated decision-making',
         body: ['We do not use automated decision-making, including profiling, within the meaning of Art. 22 GDPR.'],
       },
       {
-        heading: '14. Changes',
+        heading: '15. Changes',
         body: ['We update this privacy policy when the law or our data processing changes. The version published on this page applies.'],
       },
     ],

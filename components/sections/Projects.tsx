@@ -1,4 +1,5 @@
 import { ArrowUpRight } from 'lucide-react';
+import type { MediaItem } from '@/lib/admin/types';
 import type { Dictionary } from '@/lib/i18n/types';
 import { Keycap } from '@/components/ui/Keycap';
 import { Reveal } from '@/components/ui/Reveal';
@@ -6,7 +7,7 @@ import { SectionLabel } from '@/components/ui/SectionLabel';
 import { SpotlightCard } from '@/components/ui/SpotlightCard';
 
 /** Verified deployments rendered as production manifests. */
-export const Projects = ({ projects }: { projects: Dictionary['projects'] }) => (
+export const Projects = ({ projects, media = [] }: { projects: Dictionary['projects']; media?: MediaItem[] }) => (
   <section id="work" aria-labelledby="work-title" className="relative px-4 py-28 md:px-8">
     <div className="mx-auto max-w-[1600px]">
       <SectionLabel index="03">{projects.label}</SectionLabel>
@@ -61,6 +62,22 @@ export const Projects = ({ projects }: { projects: Dictionary['projects'] }) => 
                   </dd>
                 </div>
               </dl>
+              {/* Optional images managed in the admin CMS (slot "project-<index>"); nothing renders without them. */}
+              {(() => {
+                const images = media.filter((m) => m.slot === `project-${i}`);
+                if (images.length === 0) return null;
+                const [cover, ...thumbs] = images;
+                return (
+                  <div className="grid gap-3 lg:col-span-12 lg:grid-cols-4">
+                    {/* eslint-disable-next-line @next/next/no-img-element -- CMS images are stored as data URLs */}
+                    <img src={cover!.src} alt={cover!.alt || project.name} loading="lazy" className="aspect-video w-full border border-line/20 object-cover lg:col-span-4" />
+                    {thumbs.map((m) => (
+                      // eslint-disable-next-line @next/next/no-img-element -- CMS images are stored as data URLs
+                      <img key={m.id} src={m.src} alt={m.alt || project.name} loading="lazy" className="aspect-video w-full border border-line/20 object-cover" />
+                    ))}
+                  </div>
+                );
+              })()}
             </SpotlightCard>
           </div>
         ))}

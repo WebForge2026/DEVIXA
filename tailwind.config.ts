@@ -12,7 +12,7 @@ const config: Config = {
         panel: 'rgb(var(--panel) / <alpha-value>)',
         slate: { stone: '#E2E4E9', deep: '#CBD5E1' },
         obsidian: '#050507',
-        crimson: { DEFAULT: '#FF2A2A', deep: '#990000' },
+        crimson: { DEFAULT: 'rgb(var(--accent-rgb, 255 42 42) / <alpha-value>)', deep: '#990000' },
       },
       fontFamily: {
         display: ['var(--font-display)', 'system-ui', 'sans-serif'],

@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { ActController } from '@/components/providers/ActController';
 import { Footer } from '@/components/sections/Footer';
 import { LegalPage } from '@/components/sections/LegalPage';
+import { getSiteDictionary } from '@/lib/admin/content';
 import { getDictionary } from '@/lib/i18n';
 import { isLocale } from '@/lib/i18n/config';
 import { pageMetadata } from '@/lib/seo';
@@ -14,9 +15,9 @@ export const generateMetadata = ({ params }: { params: { locale: string } }): Me
   return pageMetadata({ locale: params.locale, path: '/privacy', title: getLegal(params.locale).privacy.title, description: meta.privacy });
 };
 
-const Page = ({ params }: { params: { locale: string } }) => {
+const Page = async ({ params }: { params: { locale: string } }) => {
   if (!isLocale(params.locale)) notFound();
-  const dict = getDictionary(params.locale);
+  const dict = await getSiteDictionary(params.locale);
 
   return (
     <>

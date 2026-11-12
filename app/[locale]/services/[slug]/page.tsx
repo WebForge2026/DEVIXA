@@ -12,24 +12,23 @@ import { SectionLabel } from '@/components/ui/SectionLabel';
 import { SpotlightCard } from '@/components/ui/SpotlightCard';
 import { isLocale, locales, type Locale } from '@/lib/i18n/config';
 import { pageMetadata } from '@/lib/seo';
-import { getDictionary } from '@/lib/i18n';
+import { getSiteDictionary } from '@/lib/admin/content';
 import { serviceSlugs } from '@/lib/site';
 
 type Params = { locale: string; slug: string };
 
-export const dynamicParams = false;
 
 export const generateStaticParams = () => locales.flatMap((locale) => serviceSlugs.map((slug) => ({ locale, slug })));
 
-const findService = ({ locale, slug }: Params) => {
+const findService = async ({ locale, slug }: Params) => {
   if (!isLocale(locale)) return null;
-  const dict = getDictionary(locale);
+  const dict = await getSiteDictionary(locale);
   const service = dict.services.items.find((item) => item.slug === slug);
   return service ? { dict, service, locale } : null;
 };
 
-export const generateMetadata = ({ params }: { params: Params }): Metadata => {
-  const found = findService(params);
+export const generateMetadata = async ({ params }: { params: Params }): Promise<Metadata> => {
+  const found = await findService(params);
   if (!found) return {};
   return pageMetadata({
     locale: found.locale,
@@ -39,8 +38,8 @@ export const generateMetadata = ({ params }: { params: Params }): Metadata => {
   });
 };
 
-const ServicePage = ({ params }: { params: Params }) => {
-  const found = findService(params);
+const ServicePage = async ({ params }: { params: Params }) => {
+  const found = await findService(params);
   if (!found) notFound();
   const { dict, service, locale } = found;
   const t = dict.servicePage;
