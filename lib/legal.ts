@@ -14,13 +14,13 @@ export const legal = {
   uic: null as string | null,
   /** VAT identification number, usually "BG" + ЕИК. */
   vatId: null as string | null,
-  /** Hosting provider of the website, e.g. "Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, USA". */
-  hostingProvider: null as string | null,
-  /** Supabase project region used for form data. */
-  databaseRegion: 'Frankfurt am Main, Deutschland (eu-central-1)',
+  /** Hosting provider of the website, e.g. "Hetzner Online GmbH, Industriestr. 25, 91710 Gunzenhausen, Deutschland". */
+  hostingProvider: 'Hetzner Online GmbH, Industriestr. 25, 91710 Gunzenhausen, Deutschland',
+  /** Datacentre location of the managed database (Hetzner, Germany). */
+  databaseRegion: 'Deutschland (Hetzner Online GmbH)',
   emails: { office: 'office@devixa.de', support: 'support@devixa.de' },
   phones: { de: '+49 151 29569444', bg: '+359 895 780 379' },
-  updated: '2026-11-10',
+  updated: '2026-11-14',
 } as const;
 
 export type LegalSection = { heading: string; body: string[] };

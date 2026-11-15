@@ -96,7 +96,7 @@ export const en: LegalDocs = {
         body: [
           'When you send us an enquiry via the contact form, we process your name, email address, optionally your company, the project type, the estimated budget and your message. When you send a configuration from the cost calculator, we process the selected options, the calculated estimate and your email address.',
           'The purpose is to handle and answer your enquiry and, where applicable, to prepare a quote. The legal basis is Art. 6(1)(b) GDPR (pre-contractual measures) and, where your enquiry is not related to a contract, Art. 6(1)(f) GDPR (legitimate interest in answering enquiries).',
-          `The data is stored in a database operated by Supabase Inc. in a data centre in the EU (region: ${legal.databaseRegion}). Supabase processes the data solely on our behalf under a data processing agreement pursuant to Art. 28 GDPR.`,
+          `The data is stored in a database on servers of our hosting provider (${legal.hostingProvider}), operated in a data centre in the EU (location: ${legal.databaseRegion}). The hosting provider processes the data solely on our behalf under a data processing agreement pursuant to Art. 28 GDPR.`,
           'We delete your enquiry data as soon as it is no longer required — at the latest six months after our communication has ended if no contract is concluded. If a contract is concluded, statutory retention periods apply.',
         ],
       },

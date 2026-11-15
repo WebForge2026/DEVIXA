@@ -1,9 +1,8 @@
 'use client';
 
 import { Check } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { useFormState, useFormStatus } from 'react-dom';
-import { submitEstimate, type ActionState } from '@/app/actions/leads';
+import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
+import { postForm, type SubmitState } from '@/lib/submit';
 import { estimateRange, formatEuro, marketRange, type FeatureId, type SystemType, type TimelineId } from '@/lib/estimate';
 import type { Dictionary } from '@/lib/i18n/types';
 import { cn } from '@/lib/utils';
@@ -11,14 +10,11 @@ import { MagneticButton } from '@/components/ui/MagneticButton';
 import { track } from '@/lib/telemetry-client';
 import { SectionLabel } from '@/components/ui/SectionLabel';
 
-const SubmitButton = ({ label }: { label: string }) => {
-  const { pending } = useFormStatus();
-  return (
-    <MagneticButton type="submit" variant="crimson" disabled={pending}>
-      {pending ? '…' : label}
-    </MagneticButton>
-  );
-};
+const SubmitButton = ({ label, pending }: { label: string; pending: boolean }) => (
+  <MagneticButton type="submit" variant="crimson" disabled={pending}>
+    {pending ? '…' : label}
+  </MagneticButton>
+);
 
 type EstimatorProps = { estimator: Dictionary['estimator']; contact: Dictionary['contact']; intlLocale: string };
 
@@ -27,9 +23,17 @@ export const Estimator = ({ estimator, contact, intlLocale }: EstimatorProps) =>
   const [system, setSystem] = useState<SystemType>('business-system');
   const [features, setFeatures] = useState<FeatureId[]>(['dashboard']);
   const [timeline, setTimeline] = useState<TimelineId>('standard');
-  const [state, action] = useFormState<ActionState, FormData>(submitEstimate, { status: 'idle' });
+  const [state, setState] = useState<SubmitState>({ status: 'idle' });
+  const [pending, setPending] = useState(false);
 
   const emailInvalid = state.status === 'error' && Boolean(state.fieldErrors?.contact_email?.length);
+
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setPending(true);
+    setState(await postForm('/api/estimate', new FormData(event.currentTarget)));
+    setPending(false);
+  };
   // Funnel telemetry for the admin panel: calculator seen, then first configuration change.
   const sectionRef = useRef<HTMLElement>(null);
   const interacted = useRef(false);
@@ -72,7 +76,7 @@ export const Estimator = ({ estimator, contact, intlLocale }: EstimatorProps) =>
         </h2>
         <p className="mt-4 max-w-xl text-fg/70">{estimator.intro}</p>
 
-        <form action={action} onChange={markInteraction} className="mt-12 grid gap-px border border-line/20 bg-line/20 lg:grid-cols-12">
+        <form onSubmit={onSubmit} onChange={markInteraction} className="mt-12 grid gap-px border border-line/20 bg-line/20 lg:grid-cols-12">
           <div className="space-y-10 bg-panel/80 p-6 backdrop-blur-md md:p-10 lg:col-span-7">
             <fieldset>
               <legend className="font-mono text-[10px] uppercase tracking-[0.25em] text-crimson">A · {estimator.systemType}</legend>
@@ -92,7 +96,7 @@ export const Estimator = ({ estimator, contact, intlLocale }: EstimatorProps) =>
                   const on = features.includes(option.id as FeatureId);
                   return (
                     <label key={option.id} className={chip(on)} data-cursor="lens">
-                      <input type="checkbox" name="features" value={option.id} checked={on} onChange={() => toggle(option.id as FeatureId)} className="sr-only" />
+                      <input type="checkbox" name="features[]" value={option.id} checked={on} onChange={() => toggle(option.id as FeatureId)} className="sr-only" />
                       <span className={cn('grid h-3.5 w-3.5 place-items-center border', on ? 'border-obsidian' : 'border-current')}>{on ? <Check size={10} strokeWidth={3} /> : null}</span>
                       {option.label}
                     </label>
@@ -155,7 +159,7 @@ export const Estimator = ({ estimator, contact, intlLocale }: EstimatorProps) =>
                   <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden />
                   <input type="hidden" name="locale" value={intlLocale.slice(0, 2)} />
                   <div className="mt-6">
-                    <SubmitButton label={estimator.submit} />
+                    <SubmitButton label={estimator.submit} pending={pending} />
                   </div>
                   {state.status === 'error' ? (
                     <p id="estimate-email-error" role="alert" className="mt-4 text-sm text-crimson">

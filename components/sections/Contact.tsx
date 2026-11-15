@@ -1,23 +1,20 @@
 'use client';
 
 import { ArrowUpRight, Mail, Phone } from 'lucide-react';
-import Link from 'next/link';
-import { useFormState, useFormStatus } from 'react-dom';
-import { submitLead, type ActionState } from '@/app/actions/leads';
+import Link from '@/components/ui/Link';
+import { useState, type FormEvent } from 'react';
+import { postForm, type SubmitState } from '@/lib/submit';
 import type { Locale } from '@/lib/i18n/config';
 import type { Dictionary } from '@/lib/i18n/types';
 import { site } from '@/lib/site';
 import { MagneticButton } from '@/components/ui/MagneticButton';
 import { SectionLabel } from '@/components/ui/SectionLabel';
 
-const Submit = ({ idle, busy }: { idle: string; busy: string }) => {
-  const { pending } = useFormStatus();
-  return (
-    <MagneticButton type="submit" variant="crimson" disabled={pending}>
-      {pending ? busy : idle} <ArrowUpRight size={14} />
-    </MagneticButton>
-  );
-};
+const Submit = ({ idle, busy, pending }: { idle: string; busy: string; pending: boolean }) => (
+  <MagneticButton type="submit" variant="crimson" disabled={pending}>
+    {pending ? busy : idle} <ArrowUpRight size={14} />
+  </MagneticButton>
+);
 
 /** Shows a translated message for a field that failed server validation. */
 const FieldError = ({ id, show, message }: { id: string; show: boolean; message: string }) =>
@@ -35,11 +32,19 @@ const CHANNELS = [
 ];
 
 export const Contact = ({ locale, contact }: { locale: Locale; contact: Dictionary['contact'] }) => {
-  const [state, action] = useFormState<ActionState, FormData>(submitLead, { status: 'idle' });
+  const [state, setState] = useState<SubmitState>({ status: 'idle' });
+  const [pending, setPending] = useState(false);
   const errors = state.status === 'error' ? state.fieldErrors : undefined;
   const f = contact.fields;
   const e = contact.errors;
   const invalid = (field: string) => Boolean(errors?.[field]?.length);
+
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setPending(true);
+    setState(await postForm('/api/leads', new FormData(event.currentTarget)));
+    setPending(false);
+  };
 
   return (
     <section id="contact" aria-labelledby="contact-title" className="relative px-4 py-28 md:px-8">
@@ -73,7 +78,7 @@ export const Contact = ({ locale, contact }: { locale: Locale; contact: Dictiona
               <p className="type-display max-w-[18ch] text-3xl">{contact.success}</p>
             </div>
           ) : (
-            <form action={action} noValidate className="grid gap-x-8 gap-y-7 md:grid-cols-2">
+            <form onSubmit={onSubmit} noValidate className="grid gap-x-8 gap-y-7 md:grid-cols-2">
               <div>
                 <label htmlFor="full_name" className="font-mono text-[10px] uppercase tracking-[0.25em] text-fg/60">{f.fullName} *</label>
                 <input id="full_name" name="full_name" required minLength={2} maxLength={120} autoComplete="name" className="field" aria-invalid={invalid('full_name')} aria-describedby={invalid('full_name') ? 'full_name-error' : undefined} />
@@ -127,7 +132,7 @@ export const Contact = ({ locale, contact }: { locale: Locale; contact: Dictiona
                 </span>
               </label>
               <div className="flex flex-wrap items-center gap-6 md:col-span-2">
-                <Submit idle={contact.submit} busy={contact.sending} />
+                <Submit idle={contact.submit} busy={contact.sending} pending={pending} />
                 {state.status === 'error' && state.reason !== 'validation' ? (
                   <p role="alert" className="font-mono text-xs text-crimson">
                     {state.reason === 'config' ? contact.errorConfig : state.reason === 'rate' ? e.rate : contact.errorGeneric}

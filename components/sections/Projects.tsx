@@ -62,19 +62,24 @@ export const Projects = ({ projects, media = [] }: { projects: Dictionary['proje
                   </dd>
                 </div>
               </dl>
-              {/* Optional images managed in the admin CMS (slot "project-<index>"); nothing renders without them. */}
+              {/* Images managed in the admin CMS (slot "project-<index>"); CmsRuntime fills this at runtime. */}
               {(() => {
                 const images = media.filter((m) => m.slot === `project-${i}`);
-                if (images.length === 0) return null;
-                const [cover, ...thumbs] = images;
                 return (
-                  <div className="grid gap-3 lg:col-span-12 lg:grid-cols-4">
-                    {/* eslint-disable-next-line @next/next/no-img-element -- CMS images are stored as data URLs */}
-                    <img src={cover!.src} alt={cover!.alt || project.name} loading="lazy" className="aspect-video w-full border border-line/20 object-cover lg:col-span-4" />
-                    {thumbs.map((m) => (
-                      // eslint-disable-next-line @next/next/no-img-element -- CMS images are stored as data URLs
-                      <img key={m.id} src={m.src} alt={m.alt || project.name} loading="lazy" className="aspect-video w-full border border-line/20 object-cover" />
-                    ))}
+                  <div data-cms-slot={`project-${i}`} className={images.length > 0 ? 'grid gap-3 lg:col-span-12 lg:grid-cols-4' : 'hidden'}>
+                    {(() => {
+                      const [cover, ...thumbs] = images;
+                      return (
+                        <>
+                          {cover ? (
+                            <img src={cover.src} alt={cover.alt || project.name} loading="lazy" className="aspect-video w-full border border-line/20 object-cover lg:col-span-4" />
+                          ) : null}
+                          {thumbs.map((m) => (
+                            <img key={m.id} src={m.src} alt={m.alt || project.name} loading="lazy" className="aspect-video w-full border border-line/20 object-cover" />
+                          ))}
+                        </>
+                      );
+                    })()}
                   </div>
                 );
               })()}

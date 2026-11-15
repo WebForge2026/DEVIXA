@@ -1,0 +1,74 @@
+name: rebuild-cms
+
+# CMS text overrides are baked into the static pages at build time. This workflow
+# pulls the current published CMS state from the production database, rebuilds the
+# static export with it (CMS_SNAPSHOT) and deploys — making new texts live.
+# Theme and media changes do NOT need this: they apply at runtime (CmsRuntime).
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: rebuild-cms
+  cancel-in-progress: false
+
+jobs:
+  rebuild:
+    name: Rebuild with published CMS texts
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install PHP
+        run: sudo apt-get update -q && sudo apt-get install -y -q php-cli
+
+      - name: Install SSH key
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "${{ secrets.HETZNER_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p "${{ secrets.HETZNER_SSH_PORT || '22' }}" "${{ secrets.HETZNER_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Fetch published CMS state
+        env:
+          SSH: ssh -i ~/.ssh/deploy_key -p "${{ secrets.HETZNER_SSH_PORT || '22' }}" ${{ secrets.HETZNER_USER }}@${{ secrets.HETZNER_HOST }}
+        run: $SSH 'php $HOME/public_html/devixa.de/current/database/export-cms.php' > cms.json
+
+      - id: read-cms
+        run: |
+          sudo apt-get install -y -q jq
+          echo "json=$(jq -c . cms.json)" >> "$GITHUB_OUTPUT"
+
+      - run: npm ci
+      - name: Build with CMS snapshot
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SITE_URL: https://devixa.de
+          CMS_SNAPSHOT: ${{ steps.read-cms.outputs.json }}
+
+      - name: Assemble + deploy (same layout as deploy.yml)
+        env:
+          SSH: ssh -i ~/.ssh/deploy_key -p "${{ secrets.HETZNER_SSH_PORT || '22' }}" ${{ secrets.HETZNER_USER }}@${{ secrets.HETZNER_HOST }}
+          RELEASE: cms-${{ github.run_id }}
+        run: |
+          mkdir -p release
+          cp -r dist release/site
+          cp -r php/api release/api
+          cp -r php/lib release/lib
+          cp -r database release/database
+          mkdir -p release/deploy
+          cp php/deploy/.htaccess release/deploy/.htaccess
+          cp php/deploy/locale.php release/deploy/locale.php
+          cp scripts/deploy.sh release/deploy.sh
+          tar -czf /tmp/release.tar.gz -C release .
+          scp -i ~/.ssh/deploy_key -P "${{ secrets.HETZNER_SSH_PORT || '22' }}" /tmp/release.tar.gz \
+            "${{ secrets.HETZNER_USER }}@${{ secrets.HETZNER_HOST }}:/tmp/release.tar.gz"
+          $SSH 'set -e; rm -rf ~/devixa-deploy && mkdir -p ~/devixa-deploy && \
+            cat /tmp/release.tar.gz | tar -xzf - -C ~/devixa-deploy && rm /tmp/release.tar.gz && \
+            cd ~/devixa-deploy && APP_ROOT=$HOME/public_html/devixa.de bash release/deploy.sh'
+          sleep 5
+          curl -fsS --max-time 20 https://devixa.de/api/health

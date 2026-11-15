@@ -1,19 +1,43 @@
 # DEVIXA — web platform
 
 Marketing site and lead pipeline for **Devixa** (Creative Solutions 88 EOOD).
-Next.js 14 App Router · TypeScript · Tailwind · React Three Fiber + Rapier · Lenis + GSAP · Supabase.
+Frontend: **React 18 SPA (Vite)** · Tailwind · React Three Fiber + Rapier · Lenis + GSAP — build → `dist/`.
+Backend: **PHP 8** (any Apache shared host) · MariaDB. No Node.js required on the server.
 
-## Run
+## Workflow
 
 ```bash
 npm install
-cp .env.example .env.local   # add Supabase URL + anon key
-npm run dev                  # http://localhost:3000 → /de (or the saved / browser language)
-npm run build && npm start
+npm run dev      # dev server (проксира /api към PHP бекенда — виж по-долу)
+npm run build    # → dist/  — качваш САМО съдържанието на dist/ на хоста
+npm test         # unit + TS↔PHP parity тестове (нужен php-cli)
 ```
 
-Supabase: create a project in an **EU region**, then run `supabase/schema.sql` in the SQL editor.
-Without the env vars the site still works; the forms show a "not connected yet" message.
+Качване на продукция: копираш **съдържанието на `dist/`** в `public_html/devixa.de/`
+(през WebFTP/FTP — направо върху съществуващите файлове). PHP бекендът (`api/`,
+`.htaccess`, `locale.php`, `~/devixa-php/`, `~/.devixa.php`) се настройва **веднъж**
+и не се пипа при ъпдейти на фронта. Ако го няма още — виж `docs/DEPLOY_HETZNER.md`.
+
+Локално API тестване (PHP + реалната база):
+
+```bash
+mkdir -p /tmp/devixa-docroot && cp -r php/api /tmp/devixa-docroot/api \
+  && cp php/deploy/locale.php /tmp/devixa-docroot/
+DEVIXA_LIB="$PWD/php/lib" DEVIXA_CONFIG="$HOME/.devixa.php" php -S 127.0.0.1:8099 -t /tmp/devixa-docroot
+# после: npm run dev  →  vite проксира /api към 127.0.0.1:8099
+```
+
+## Структура
+
+```
+src/                      React SPA вход (main/App/Site/страници/SEO)
+components/               всички секции, canvas, providers, admin UI (без промяна)
+lib/                      i18n речници, ценообразуване, типове
+php/api php/lib           PHP бекенд (ендпойнти + библиотека)
+php/deploy/               .htaccess, locale.php, примерен конфиг
+database/                 схема, миграции, migrate.php, export-cms.php
+scripts/prebuild.mjs      генерира sitemap.xml / robots.txt / manifest в dist
+```
 
 ## Structure
 
@@ -43,10 +67,18 @@ components/
   sections/ ui/
 lib/
   i18n/dictionaries/        all copy, typed by lib/i18n/types.ts
-  estimate.ts               configurator pricing (shared client/server)
+  estimate.ts               configurator pricing (shared client/server reference)
   store.ts                  per-frame shared state between DOM and WebGL
-  supabase/                 browser + server clients (@supabase/ssr)
-supabase/schema.sql         tables, constraints, RLS: anon INSERT only, reads for service_role
+  submit.ts                 form → PHP endpoint contract (SubmitState)
+php/
+  api/                      PHP endpoints (leads, estimate, telemetry, admin, health, CMS)
+  lib/                      bootstrap/config, auth (HMAC cookie), store (PDO), overview, pricing, rate limit
+  deploy/                   .htaccess, locale.php, config example — live at the docroot
+database/
+  migrations/               versioned, re-runnable SQL migrations (php database/migrate.php)
+  schema.sql                full reproducible schema for fresh installs
+  migrate.php export-cms.php  CLI tools (migrations / CMS snapshot for rebuilds)
+supabase/schema.sql         ARCHIVED pre-migration PostgreSQL schema (audit/rollback reference only)
 ```
 
 ## SEO & launch
@@ -67,15 +99,20 @@ supabase/schema.sql         tables, constraints, RLS: anon INSERT only, reads fo
 - Modules: Command Center (KPIs, trends, funnel, conversion gauge, 12-week heatmap), Live Analytics,
   Leads & Quotes (CRM with search, filters, status, notes, lead inspector), Content & Media CMS
   (texts per language, project images, design settings with reset).
-- Data: `lib/admin/store` — Supabase adapter (needs `SUPABASE_SERVICE_ROLE_KEY` + `supabase/schema.sql`)
-  or a JSON file in `.data/` for local development. `npm run admin:seed` writes demo data locally.
+- Data: PHP backend (`php/`) on MariaDB (needs `~/.devixa.php` + `php database/migrate.php`).
+  `npm run admin:seed` writes demo data (add `--db` to seed the database).
+- Health probe for deploys/uptime monitors: `GET /api/health` (checks the DB).
+- CMS: theme + media apply at runtime (CmsRuntime); text overrides apply at build —
+  after editing texts run the `rebuild-cms` GitHub workflow (or redeploy).
 - Telemetry is first-party and cookieless (`/api/t`): daily-rotating hash, no IP stored, DNT/GPC respected.
 
 ## Before going live
 
-1. Fill in the `null` fields in `lib/legal.ts` (address, managing director, ЕИК, VAT ID, hosting provider).
+1. Fill in the `null` fields in `lib/legal.ts` (address, managing director, ЕИК, VAT ID).
+   Hosting provider and database region are pre-filled for Hetzner — verify them.
    Until then the imprint and privacy policy show red placeholders.
-2. Add the Supabase keys and run `supabase/schema.sql`.
+2. Create `~/.devixa.php` on the host (see `php/deploy/devixa.config.example.php`), run
+   `php database/migrate.php`, and deploy per `docs/DEPLOY_HETZNER.md`.
 3. Have the imprint and privacy policy reviewed by a lawyer.
 
 ## Notes

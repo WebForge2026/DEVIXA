@@ -1,10 +1,9 @@
 'use client';
 
-import dynamic from 'next/dynamic';
-import { useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { CanvasBoundary } from './CanvasBoundary';
 
-const Lanyard = dynamic(() => import('./Lanyard'), { ssr: false });
+const Lanyard = lazy(() => import('./Lanyard'));
 
 /** Mounts the lanyard only once the footer approaches the viewport. */
 export const LanyardMount = () => {
@@ -23,7 +22,9 @@ export const LanyardMount = () => {
     <div ref={host} className="absolute inset-0">
       {visible ? (
         <CanvasBoundary>
-          <Lanyard />
+          <Suspense fallback={null}>
+            <Lanyard />
+          </Suspense>
         </CanvasBoundary>
       ) : null}
     </div>

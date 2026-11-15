@@ -1,14 +1,12 @@
-// Local development only: fills .data/admin-store.json with DEMO telemetry and leads so the
-// Command Center can be explored. Never touches Supabase. Usage: npm run admin:seed [-- --force]
+// Local development only: fills DEMO telemetry and leads so the Command Center can
+// be explored. Two targets:
+//   node scripts/admin-seed.mjs          → .data/admin-store.json (file store)
+//   node scripts/admin-seed.mjs --db     → MariaDB (DATABASE_URL), idempotent
+// Demo rows are tagged (visitor 'demo…' / e-mail 'demo.…@example.com'); the --db
+// mode skips the seed if demo data already exists, so it is safe to re-run.
 import { randomUUID } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
-
-const file = path.join(process.cwd(), '.data', 'admin-store.json');
-if (existsSync(file) && !process.argv.includes('--force')) {
-  console.log(`${file} already exists — run with --force to replace it.`);
-  process.exit(0);
-}
 
 let seed = 42;
 const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
@@ -56,7 +54,72 @@ const leads = Array.from({ length: 14 }, (_, i) => {
   };
 });
 
-const previous = existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')) : {};
-mkdirSync(path.dirname(file), { recursive: true });
-writeFileSync(file, JSON.stringify({ events, presence: {}, leads, content: previous.content ?? { texts: {}, media: [], theme: { accent: '#FF2A2A', cardRadius: 0, glow: 0.16, sphereRed: 0.2 }, updatedAt: null } }));
-console.log(`Demo data written: ${events.length} events, ${leads.length} leads → ${file}`);
+const defaultContent = { texts: {}, media: [], theme: { accent: '#FF2A2A', cardRadius: 0, glow: 0.16, sphereRed: 0.2 }, updatedAt: null };
+
+/* ---------------------------------------------------------------- file mode */
+const seedFile = () => {
+  const file = path.join(process.cwd(), '.data', 'admin-store.json');
+  if (existsSync(file) && !process.argv.includes('--force')) {
+    console.log(`${file} already exists — run with --force to replace it.`);
+    process.exit(0);
+  }
+  const previous = existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')) : {};
+  mkdirSync(path.dirname(file), { recursive: true });
+  writeFileSync(file, JSON.stringify({ events, presence: {}, leads, content: previous.content ?? defaultContent }));
+  console.log(`Demo data written: ${events.length} events, ${leads.length} leads → ${file}`);
+};
+
+/* ------------------------------------------------------------------- db mode */
+const seedDb = async () => {
+  const { default: mysql } = await import('mysql2/promise');
+  const toDbTs = (iso) => iso.slice(0, 23).replace('T', ' ');
+  const client = await mysql.createConnection({ uri: process.env.DATABASE_URL, dateStrings: true });
+  try {
+    const [[existing]] = await client.query(
+      "select (select count(*) from leads where email like 'demo.%@example.com') as leads, (select count(*) from site_events where visitor like 'demo%') as events",
+    );
+    if (!process.argv.includes('--force') && (Number(existing.leads) > 0 || Number(existing.events) > 0)) {
+      console.log(`Demo data already present (${existing.leads} leads, ${existing.events} events) — nothing written. Use --force to add another batch.`);
+      return;
+    }
+
+    await client.query('start transaction');
+    for (const e of events) {
+      await client.query('insert into site_events (type, path, locale, visitor, created_at) values (?,?,?,?,?)', [e.type, e.path, e.locale, e.visitor, toDbTs(e.createdAt)]);
+    }
+    for (const l of leads) {
+      if (l.kind === 'quote') {
+        await client.query(
+          'insert into project_estimates (system_type, features, timeline, estimated_price, contact_email, status, price_low, price_high, locale, created_at) values (?,?,?,?,?,?,?,?,?,?)',
+          [l.config.systemType, JSON.stringify(l.config.features), l.config.timeline, `EUR ${l.priceLow}-${l.priceHigh}`, l.email, l.status, l.priceLow, l.priceHigh, l.locale, toDbTs(l.createdAt)],
+        );
+      } else {
+        await client.query(
+          'insert into leads (full_name, email, company, project_type, estimated_budget, message, status, locale, created_at) values (?,?,?,?,?,?,?,?,?)',
+          [l.name, l.email, l.company, l.projectType, l.budgetLabel, l.message, l.status, l.locale, toDbTs(l.createdAt)],
+        );
+      }
+    }
+    await client.query('insert into site_content (id, data) values (?, ?) on duplicate key update data = values(data)', ['live', JSON.stringify(defaultContent)]);
+    await client.query('commit');
+    console.log(`Demo data written to MariaDB: ${events.length} events, ${leads.length} leads.`);
+  } catch (error) {
+    await client.query('rollback').catch(() => undefined);
+    throw error;
+  } finally {
+    await client.end();
+  }
+};
+
+if (process.argv.includes('--db')) {
+  if (!process.env.DATABASE_URL) {
+    console.error('DATABASE_URL is required for --db seeding.');
+    process.exit(1);
+  }
+  seedDb().catch((error) => {
+    console.error(error.message);
+    process.exit(1);
+  });
+} else {
+  seedFile();
+}

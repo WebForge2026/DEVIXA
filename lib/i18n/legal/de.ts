@@ -98,7 +98,7 @@ export const de: LegalDocs = {
         body: [
           'Wenn Sie uns über das Kontaktformular eine Anfrage senden, verarbeiten wir Ihren Namen, Ihre E-Mail-Adresse, optional Ihr Unternehmen, die Projektart, das geschätzte Budget und Ihre Nachricht. Wenn Sie eine Konfiguration aus dem Kostenrechner senden, verarbeiten wir die gewählten Optionen, den berechneten Richtwert und Ihre E-Mail-Adresse.',
           'Zweck ist die Bearbeitung und Beantwortung Ihrer Anfrage sowie gegebenenfalls die Erstellung eines Angebots. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (vorvertragliche Maßnahmen) und, soweit Ihre Anfrage keinen Vertragsbezug hat, Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Beantwortung von Anfragen).',
-          `Die Daten werden in einer Datenbank des Anbieters Supabase Inc. gespeichert, die in einem Rechenzentrum in der EU betrieben wird (Region: ${legal.databaseRegion}). Supabase verarbeitet die Daten ausschließlich in unserem Auftrag auf Grundlage eines Auftragsverarbeitungsvertrags nach Art. 28 DSGVO.`,
+          `Die Daten werden in einer Datenbank auf Servern unseres Hosting-Anbieters (${legal.hostingProvider}) gespeichert, die in einem Rechenzentrum in der EU betrieben wird (Standort: ${legal.databaseRegion}). Der Hosting-Anbieter verarbeitet die Daten ausschließlich in unserem Auftrag auf Grundlage eines Auftragsverarbeitungsvertrags nach Art. 28 DSGVO.`,
           'Wir löschen Ihre Anfragedaten, sobald sie nicht mehr erforderlich sind — spätestens sechs Monate nach Abschluss der Kommunikation, sofern kein Vertrag zustande kommt. Kommt ein Vertrag zustande, gelten die gesetzlichen Aufbewahrungsfristen.',
         ],
       },

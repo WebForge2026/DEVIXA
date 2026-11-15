@@ -1,0 +1,83 @@
+name: deploy
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Verify (typecheck · lint · test · build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install PHP (lint + parity tests run the PHP backend)
+        run: sudo apt-get update -q && sudo apt-get install -y -q php-cli
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npm run lint
+      - run: npm test
+      - name: Build static export
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SITE_URL: https://devixa.de
+      - name: Assemble release tarball
+        run: |
+          mkdir -p release
+          cp -r dist release/site
+          cp -r php/api release/api
+          cp -r php/lib release/lib
+          cp -r database release/database
+          mkdir -p release/deploy
+          cp php/deploy/.htaccess release/deploy/.htaccess
+          cp php/deploy/locale.php release/deploy/locale.php
+          cp scripts/deploy.sh release/deploy.sh
+          tar -czf /tmp/release.tar.gz -C release .
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release
+          path: /tmp/release.tar.gz
+          retention-days: 7
+
+  deploy:
+    name: Deploy to Hetzner Webhosting L
+    needs: verify
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Download release artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: release
+
+      - name: Install SSH key
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "${{ secrets.HETZNER_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p "${{ secrets.HETZNER_SSH_PORT || '22' }}" "${{ secrets.HETZNER_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Upload + activate release
+        env:
+          SSH: ssh -i ~/.ssh/deploy_key -p "${{ secrets.HETZNER_SSH_PORT || '22' }}" ${{ secrets.HETZNER_USER }}@${{ secrets.HETZNER_HOST }}
+          RELEASE: ${{ github.run_id }}-${{ github.sha }}
+        run: |
+          scp -i ~/.ssh/deploy_key -P "${{ secrets.HETZNER_SSH_PORT || '22' }}" release.tar.gz \
+            "${{ secrets.HETZNER_USER }}@${{ secrets.HETZNER_HOST }}:/tmp/release.tar.gz"
+          $SSH 'set -e; rm -rf ~/devixa-deploy && mkdir -p ~/devixa-deploy && \
+            cat /tmp/release.tar.gz | tar -xzf - -C ~/devixa-deploy && rm /tmp/release.tar.gz && \
+            cd ~/devixa-deploy && APP_ROOT=$HOME/public_html/devixa.de bash release/deploy.sh'
+
+      - name: Health check
+        run: |
+          sleep 5
+          curl -fsS --max-time 20 https://devixa.de/api/health

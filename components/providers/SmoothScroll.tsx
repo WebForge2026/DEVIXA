@@ -3,7 +3,7 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
-import { usePathname } from 'next/navigation';
+import { useLocation } from 'react-router-dom';
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { motion } from '@/lib/store';
 
@@ -18,7 +18,7 @@ export const useLenis = () => useContext(LenisContext);
  */
 export const SmoothScroll = ({ children }: { children: ReactNode }) => {
   const [lenis, setLenis] = useState<Lenis | null>(null);
-  const pathname = usePathname();
+  const pathname = useLocation().pathname;
 
   useEffect(() => {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

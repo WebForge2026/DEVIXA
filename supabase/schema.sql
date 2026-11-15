@@ -1,8 +1,13 @@
 -- =============================================================================
--- DEVIXA — Supabase schema
--- Run in the Supabase SQL editor (project region: EU, e.g. eu-central-1 Frankfurt).
--- Model: the public site may only INSERT. Reading, updating and deleting is
--- reserved for service_role (back-office / internal tooling).
+-- DEVIXA — Supabase schema  ·  ⚠ ARCHIVED (read-only, 2026-11-14)
+-- Historical artifact kept for audit and rollback reference only. The live
+-- schema is now database/migrations + database/schema.sql (plain PostgreSQL,
+-- Hetzner Webhosting L). Do NOT run this file against production.
+-- -----------------------------------------------------------------------------
+-- Original purpose: the public site may only INSERT. Reading, updating and
+-- deleting was reserved for service_role (back-office / internal tooling).
+-- That authorization model is now enforced server-side in the Next.js app
+-- (requireAdmin + Zod-validated Server Actions) instead of RLS.
 -- =============================================================================
 
 create extension if not exists pgcrypto;

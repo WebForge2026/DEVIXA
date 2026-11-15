@@ -1,14 +1,14 @@
 'use client';
 
 import { Globe } from 'lucide-react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import Link from '@/components/ui/Link';
+import { useLocation } from 'react-router-dom';
 import { localeNames, locales, type Locale } from '@/lib/i18n/config';
 import { cn } from '@/lib/utils';
 
 /** Full-name language links that keep the visitor on the same page. */
 export const LanguageSwitcher = ({ locale, label }: { locale: Locale; label: string }) => {
-  const pathname = usePathname();
+  const pathname = useLocation().pathname;
   const swap = (target: Locale) => pathname.replace(/^\/(en|de|bg)(?=\/|$)/, `/${target}`);
 
   return (

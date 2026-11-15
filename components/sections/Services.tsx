@@ -1,5 +1,5 @@
 import { AlertTriangle, ArrowUpRight } from 'lucide-react';
-import Link from 'next/link';
+import Link from '@/components/ui/Link';
 import type { Locale } from '@/lib/i18n/config';
 import type { Dictionary } from '@/lib/i18n/types';
 import { Keycap } from '@/components/ui/Keycap';

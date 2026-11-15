@@ -213,7 +213,6 @@ const MediaManager = ({ draft, setDraft }: { draft: ContentState; setDraft: (c: 
                 {items.map((item, i) => (
                   <figure key={item.id} className="overflow-hidden rounded-md border border-zinc-800 bg-[#0c0c0f]">
                     <div className="relative">
-                      {/* eslint-disable-next-line @next/next/no-img-element -- data URL preview */}
                       <img src={item.src} alt={item.alt || slot.label} className="aspect-video w-full object-cover" />
                       {i === 0 ? <span className="absolute left-2 top-2 rounded bg-black/70 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-white">Cover</span> : null}
                     </div>
@@ -355,7 +354,6 @@ export const ContentView = () => {
     if (!data) return;
     setSaved(data.content);
     setDraftState((current) => (current && !sameContent(current, saved) ? current : data.content));
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- only react to new server data
   }, [data]);
 
   useEffect(() => {

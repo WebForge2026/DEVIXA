@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import Link from '@/components/ui/Link';
 import { useEffect, useState } from 'react';
 import { CONSENT_EVENT, CONSENT_STORAGE_KEY, analyticsNeedsConsent, type ConsentChoice } from '@/lib/analytics';
 import type { Locale } from '@/lib/i18n/config';

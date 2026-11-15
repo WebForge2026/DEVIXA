@@ -1,8 +1,8 @@
 'use client';
 
 import { Activity, AlertTriangle, ArrowUpRight, Inbox, LayoutDashboard, LogOut, PenSquare } from 'lucide-react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import Link from '@/components/ui/Link';
+import { useLocation } from 'react-router-dom';
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import type { Lead, Range } from '@/lib/admin/types';
 import { cn } from '@/lib/utils';
@@ -11,7 +11,7 @@ import { api, useAdminData } from './hooks';
 import { LiveDot, Pills, fmtNum } from './ui';
 
 type PublishState = { state: 'live' | 'dirty' | 'saving' | 'error'; updatedAt: string | null };
-type StoreInfo = { kind: 'supabase' | 'file'; persistent: boolean };
+type StoreInfo = { kind: 'db' | 'file'; persistent: boolean };
 
 type AdminContextValue = {
   range: Range;
@@ -82,7 +82,7 @@ const PublishBadge = ({ publish }: { publish: PublishState }) => {
 };
 
 export const AdminShell = ({ children }: { children: ReactNode }) => {
-  const pathname = usePathname();
+  const pathname = useLocation().pathname;
   const [range, setRange] = useState<Range>('30d');
   const [publish, setPublish] = useState<PublishState>({ state: 'live', updatedAt: null });
   const live = useAdminData<{ live: number; pages: { page: string; visitors: number }[]; store: StoreInfo }>('/api/admin/live', { pollMs: 5000 });
@@ -165,8 +165,8 @@ export const AdminShell = ({ children }: { children: ReactNode }) => {
             <div className="mx-8 mt-6 flex items-start gap-3 rounded-lg border border-amber-500/30 bg-amber-500/5 px-4 py-3 text-[12px] text-amber-200">
               <AlertTriangle size={16} className="mt-0.5 shrink-0" />
               <p>
-                No database connected: data is kept in temporary server storage and can be lost at any time. Set <code className="font-mono">SUPABASE_SERVICE_ROLE_KEY</code> and run{' '}
-                <code className="font-mono">supabase/schema.sql</code> to store leads, statistics and content permanently.
+                No database connected: data is kept in temporary server storage and can be lost at any time. Set <code className="font-mono">DATABASE_URL</code> and run{' '}
+                <code className="font-mono">npm run db:migrate</code> to store leads, statistics and content permanently.
               </p>
             </div>
           ) : null}

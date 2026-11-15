@@ -1,8 +1,16 @@
 node_modules
 .next
 out
+dist
 .env*.local
 .env
 *.tsbuildinfo
 next-env.d.ts
 .data
+.migration/
+release/
+release.tar.gz
+release.zip
+public/sitemap.xml
+public/robots.txt
+public/manifest.webmanifest

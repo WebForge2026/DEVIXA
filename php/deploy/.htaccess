@@ -1,0 +1,59 @@
+# =============================================================================
+# DEVIXA — Apache rules за PHP бекенд + статичен фронтенд (ПЛОСКИ файлове,
+# без symlink-ове). Този файл стои в document root-а (public_html/devixa.de/).
+# =============================================================================
+
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set X-Frame-Options "DENY"
+  Header set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+</IfModule>
+
+RewriteEngine On
+
+# Без mod_dir 301 към trailing slash — правилата по-долу обслужват /de и /de/ еднакво.
+DirectorySlash Off
+
+# --- вътрешната папка на приложението (библиотека + конфиг) не е публична ---
+RedirectMatch 403 ^/?_devixa/
+
+# Localized not-found (генерирано от app/[locale]/[...rest] като de/404.html).
+ErrorDocument 404 /index.html
+
+# --- начални страници по език: /de и /de/ → de.html (папките de/ en/ bg/ съществуват!) ---
+RewriteRule ^(de|en|bg)/?$ $1.html [L]
+
+# --- canonical URL-и без trailing slash ---
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.+)/$ /$1 [R=301,L]
+
+# --- pretty API URL-и → PHP endpoint-и ---
+RewriteRule ^api/t$ api/t.php [L]
+RewriteRule ^api/leads$ api/leads.php [L]
+RewriteRule ^api/estimate$ api/estimate.php [L]
+RewriteRule ^api/health$ api/health.php [L]
+RewriteRule ^api/content$ api/content.php [L]
+RewriteRule ^api/admin/session$ api/session.php [L]
+RewriteRule ^api/admin/login$ api/admin/login.php [L]
+RewriteRule ^api/admin/logout$ api/admin/logout.php [L]
+RewriteRule ^api/admin/overview$ api/admin/overview.php [L]
+RewriteRule ^api/admin/live$ api/admin/live.php [L]
+RewriteRule ^api/admin/leads$ api/admin/leads.php [L]
+RewriteRule ^api/admin/leads/([0-9a-fA-F-]{36})$ api/admin/leads-update.php?id=$1 [L,QSA]
+RewriteRule ^api/admin/content$ api/admin/content.php [L]
+
+# --- пререндирани страници (SEO): /de → de.html, /de/services/x → de/services/x.html ---
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.*)$ $1.html [L]
+
+# --- SPA fallback: всичко останало (/admin и пр.) отива в React приложението ---
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.html [L]
+
+# --- locale redirect (порт на middleware.ts): cookie → Accept-Language → de ---
+RewriteRule ^$ locale.php [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(?!((de|en|bg)(/|$)|admin(/|$)|api(/|$)|locale\.php$)).*$ locale.php [L]

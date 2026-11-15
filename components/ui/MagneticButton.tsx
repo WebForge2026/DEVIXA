@@ -1,7 +1,7 @@
 'use client';
 
 import { gsap } from 'gsap';
-import Link from 'next/link';
+import Link from '@/components/ui/Link';
 import { useEffect, useRef, type ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 

@@ -1,10 +1,9 @@
 'use client';
 
-import dynamic from 'next/dynamic';
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { CanvasBoundary } from './CanvasBoundary';
 
-const CyberChromeScene = dynamic(() => import('./CyberChromeScene'), { ssr: false });
+const CyberChromeScene = lazy(() => import('./CyberChromeScene'));
 
 const supportsWebGL = () => {
   try {
@@ -24,7 +23,9 @@ export const SceneMount = () => {
     <div aria-hidden className="pointer-events-none fixed inset-0 z-0">
       {enabled ? (
         <CanvasBoundary>
-          <CyberChromeScene />
+          <Suspense fallback={null}>
+            <CyberChromeScene />
+          </Suspense>
         </CanvasBoundary>
       ) : null}
     </div>

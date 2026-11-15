@@ -1,8 +1,8 @@
 'use client';
 
 import { Menu, X } from 'lucide-react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import Link from '@/components/ui/Link';
+import { useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { locales, localeLabels, localeNames, type Locale } from '@/lib/i18n/config';
 import type { Dictionary } from '@/lib/i18n/types';
@@ -11,7 +11,7 @@ import { MagneticButton } from '@/components/ui/MagneticButton';
 import { Wordmark } from '@/components/ui/Wordmark';
 
 export const Header = ({ locale, nav }: { locale: Locale; nav: Dictionary['nav'] }) => {
-  const pathname = usePathname();
+  const pathname = useLocation().pathname;
   const [open, setOpen] = useState(false);
   const isHome = pathname === `/${locale}`;
   const anchor = (id: string) => (isHome ? `#${id}` : `/${locale}#${id}`);

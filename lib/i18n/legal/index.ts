@@ -1,4 +1,3 @@
-import 'server-only';
 import type { LegalDocs } from '@/lib/legal';
 import type { Locale } from '../config';
 import { bg } from './bg';

@@ -1,4 +1,3 @@
-import 'server-only';
 import { bg } from './dictionaries/bg';
 import { de } from './dictionaries/de';
 import { en } from './dictionaries/en';
