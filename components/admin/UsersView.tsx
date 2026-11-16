@@ -7,7 +7,7 @@ const input = 'rounded-md border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm t
 const button = 'rounded-md border border-zinc-700 px-3 py-2 text-sm text-zinc-200 hover:bg-zinc-800 disabled:opacity-50';
 
 export const UsersView = () => {
-  const { data, loading, error, reload } = useAdminData<UsersResponse>('/api/admin/users');
+  const { data, loading, error, reload } = useAdminData<UsersResponse>('/api/admin/users.php');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [editing, setEditing] = useState<string | null>(null);
@@ -18,7 +18,7 @@ export const UsersView = () => {
   const change = async (body: object, ownPassword = false) => {
     setBusy(true); setMessage('');
     try {
-      await api('/api/admin/users', { method: 'POST', body: JSON.stringify(body) });
+      await api('/api/admin/users.php', { method: 'POST', body: JSON.stringify(body) });
       if (ownPassword) { window.location.href = '/admin/login'; return; }
       setEmail(''); setPassword(''); setEditing(null); setNewPassword('');
       await reload();

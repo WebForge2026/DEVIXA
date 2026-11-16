@@ -6,5 +6,6 @@ require_once DEVIXA_LIB_DIR . '/store.php';
 require_once DEVIXA_LIB_DIR . '/overview.php';
 
 devixa_require_admin();
-$presence = devixa_list_presence(devixa_now_ms() - 120_000);
-devixa_json([...devixa_live_pages($presence), 'store' => ['kind' => 'db', 'persistent' => true]]);
+$now = devixa_now_ms();
+$presence = devixa_list_presence($now - 120_000);
+devixa_json([...devixa_live_pages($presence, $now), 'store' => ['kind' => 'db', 'persistent' => true]]);
