@@ -91,9 +91,10 @@ jobs:
           set -eu
           staging_dir=$(mktemp -d "$HOME/.devixa-deploy.XXXXXXXXXX")
           trap 'rm -rf -- "$staging_dir"' EXIT
-          tar -xzf - -C "$staging_dir"
+          mkdir "$staging_dir/release"
+          tar -xzf - -C "$staging_dir/release"
           cd "$staging_dir"
-          APP_ROOT="$HOME/public_html/devixa.de" bash ./deploy.sh </dev/null
+          APP_ROOT="$HOME/public_html/devixa.de" bash ./release/deploy.sh </dev/null
           REMOTE
           )
 
