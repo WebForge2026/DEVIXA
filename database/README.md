@@ -59,3 +59,16 @@ delete from site_presence where last_seen < utc_timestamp() - interval 1 day;
 ### Admin users
 
 Run `php database/migrate.php` and then, **before deploying the new authentication code**, run `DEVIXA_CONFIG=/path/to/config.php php database/import-admin.php`. This imports the configured `admin_email` and `admin_password` as a password hash only when there are no admin users. Back up the database first. Deploy the new PHP and frontend together, sign in with the existing credentials, then remove `admin_email` and `admin_password` from the config. Keep `admin_session_secret`: it signs sessions. Existing sessions must sign in again. Further administrators are managed under Admin → Users; all have full access. Password changes and account removal invalidate that user's sessions.
+
+### Run migrations over HTTPS
+
+After deploying the PHP API and `_devixa/database` files, optionally set a separate, random `migration_key` (at least 32 characters) in `_devixa/config.php`. For example, generate one with `openssl rand -hex 32`. Keep it private; an empty or missing key disables the endpoint. From a terminal, run:
+
+```bash
+read -rs -p "Migration key: " DEVIXA_MIGRATION_KEY; echo
+curl --fail-with-body -X POST https://devixa.de/api/migrate.php \
+  -H "Authorization: Bearer $DEVIXA_MIGRATION_KEY"
+unset DEVIXA_MIGRATION_KEY
+```
+
+The JSON response lists applied and skipped migrations. Only run this over HTTPS. The key is sent in a header, not in the URL. Remove the key from the config when remote migration access is no longer needed. The endpoint runs SQL migrations only; the initial administrator import described above remains a separate CLI step.

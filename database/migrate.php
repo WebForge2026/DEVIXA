@@ -1,8 +1,8 @@
 <?php
 /**
  * DEVIXA — database migration runner (PHP CLI, mirrors scripts/migrate.mjs).
- * Applies database/migrations/*.sql in order, each in its own transaction,
- * recording applied files in `_migrations`. Safe to re-run.
+ * Applies database/migrations/*.sql in order,
+ * recording applied files in `_migrations`. Safe to re-run; DDL commits implicitly.
  *
  * Usage:  DATABASE_URL / config via ~/.devixa.php
  *         php database/migrate.php
@@ -60,33 +60,12 @@ if (!preg_match('/^(\d+)\.(\d+)/', (string) $version['v'], $m) || (int) $m[1] < 
     exit(1);
 }
 
-$pdo->exec('create table if not exists _migrations (name varchar(255) primary key, applied_at datetime(3) not null default current_timestamp(3)) engine = innodb');
-$applied = array_column($pdo->query('select name from _migrations')->fetchAll(), 'name');
-$done = array_flip($applied);
-
-$dir = __DIR__ . '/migrations';
-$files = array_filter(scandir($dir) ?: [], fn (string $f) => str_ends_with($f, '.sql'));
-sort($files);
-
-$exit = 0;
-foreach ($files as $file) {
-    if (isset($done[$file])) {
-        echo "skip   {$file} (already applied)\n";
-        continue;
-    }
-    $sql = file_get_contents($dir . '/' . $file);
-    echo "apply  {$file} ...\n";
-    try {
-        // MySQL/MariaDB DDL causes implicit commits, so migrations cannot run in a
-        // real transaction. Every migration is idempotent (IF NOT EXISTS), which
-        // makes re-running after a mid-file failure safe.
-        $pdo->exec($sql);
-        $pdo->prepare('insert into _migrations (name) values (?)')->execute([$file]);
-        echo "ok     {$file}\n";
-    } catch (Throwable $error) {
-        fwrite(STDERR, "FAILED {$file}: {$error->getMessage()}\n");
-        $exit = 1;
-        break;
-    }
+require_once __DIR__ . '/runner.php';
+try {
+    $result = devixa_run_migrations($pdo);
+    foreach ($result['skipped'] as $file) echo "skip   {$file} (already applied)\n";
+    foreach ($result['applied'] as $file) echo "ok     {$file}\n";
+} catch (Throwable $error) {
+    fwrite(STDERR, "Migration failed: {$error->getMessage()}\n");
+    exit(1);
 }
-exit($exit);

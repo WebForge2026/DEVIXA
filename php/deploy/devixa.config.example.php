@@ -14,4 +14,7 @@ return [
     // Admin Command Center credentials (never commit real values).
     // Admin users are stored in MariaDB; see database/README.md for initial import.
     'admin_session_secret' => '', // openssl rand -base64 48
+
+    // Optional: enables POST /api/migrate.php; use a separate random key.
+    'migration_key' => '', // openssl rand -hex 32
 ];
