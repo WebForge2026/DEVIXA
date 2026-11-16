@@ -62,3 +62,67 @@ export const marketRange = (system: SystemType, features: readonly FeatureId[], 
 
 export const formatEuro = (value: number, locale: string) =>
   new Intl.NumberFormat(locale, { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(value);
+export const devixaPricing = {
+  website: {
+    low: 949,
+    high: 3000,
+    maintenanceLow: 39,
+    maintenanceHigh: 79,
+  },
+  webshop: {
+    low: 1499,
+    high: 4299,
+    maintenanceLow: 49,
+    maintenanceHigh: 139,
+  },
+  'business-system': null,
+  integration: null,
+} as const;
+export const devixaFeaturePrices = {
+  multilang: 150,
+  cms: 200,
+  booking: 250,
+  payments: 250,
+  portal: 350,
+  dashboard: 200,
+  api: 250,
+  ai: 350,
+  migration: 150,
+} as const;
+
+
+export const calculateDevixaPrice = (
+  system: SystemType,
+  features: readonly FeatureId[],
+  timeline: TimelineId,
+) => {
+
+  const pricing = devixaPricing[system];
+
+  if (!pricing) return null;
+
+  const extras = [...new Set(features)].reduce(
+    (total, feature) => total + devixaFeaturePrices[feature],
+    0,
+  );
+
+
+const timelineExtra =
+  timeline === 'priority'
+    ? 150
+    : timeline === 'flexible'
+      ? 100
+      : 0;
+
+return {
+  price: Math.min(
+    pricing.low + extras + timelineExtra,
+    pricing.high,
+  ),
+  min: pricing.low,
+  max: pricing.high,
+  maintenanceLow: pricing.maintenanceLow,
+  maintenanceHigh: pricing.maintenanceHigh,
+};
+
+};

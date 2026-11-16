@@ -10,14 +10,14 @@ export const en: LegalDocs = {
       {
         heading: 'Information pursuant to § 5 DDG (German Digital Services Act)',
         body: [
-          `${legal.company} (${legal.companyBg})`,
-          `Registered office: ${fill(legal.address, p('business address'))}, Bulgaria`,
+          `${legal.company}`,
+          `Registered office: ${fill(legal.addressLatin, p('business address'))}`,
           'Devixa is a brand of Creative Solutions 88 EOOD.',
         ],
       },
       {
         heading: 'Represented by',
-        body: [`Managing director (Управител): ${fill(legal.managingDirector, p('managing director'))}`],
+        body: [`Managing director : ${fill(legal.managingDirectorLatin, p('managing director'))}`],
       },
       {
         heading: 'Contact',
@@ -31,8 +31,8 @@ export const en: LegalDocs = {
       {
         heading: 'Company registration',
         body: [
-          'Registered in the Commercial Register of the Registry Agency (Агенция по вписванията), Republic of Bulgaria.',
-          `Unified identification code (UIC / ЕИК): ${fill(legal.uic, p('UIC'))}`,
+          'Registered in the Commercial Register of the Bulgarian Registry Agency, Republic of Bulgaria.',
+          `Unified identification code (UIC): ${fill(legal.uic, p('UIC'))}`,
         ],
       },
       {
@@ -41,7 +41,7 @@ export const en: LegalDocs = {
       },
       {
         heading: 'Responsible for content pursuant to § 18 (2) MStV',
-        body: [`${fill(legal.managingDirector, p('managing director'))}, address as above.`],
+        body: [`${fill(legal.managingDirectorLatin, p('managing director'))}, address as above.`],
       },
       {
         heading: 'Consumer dispute resolution',
@@ -74,8 +74,8 @@ export const en: LegalDocs = {
       {
         heading: '1. Controller',
         body: [
-          `The controller responsible for data processing on this website within the meaning of the General Data Protection Regulation (GDPR) is: ${legal.company}, ${fill(legal.address, p('business address'))}, Bulgaria.`,
-          `Represented by: ${fill(legal.managingDirector, p('managing director'))}. Email: ${legal.emails.office}, phone: ${legal.phones.de}.`,
+          `The controller responsible for data processing on this website within the meaning of the General Data Protection Regulation (GDPR) is: ${legal.company}, ${fill(legal.addressLatin, p('business address'))}.`,
+          `Represented by: ${fill(legal.managingDirectorLatin, p('managing director'))}. Email: ${legal.emails.office}, phone: ${legal.phones.de}.`,
         ],
       },
       {

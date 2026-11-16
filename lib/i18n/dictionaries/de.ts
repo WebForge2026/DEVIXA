@@ -318,7 +318,7 @@ export const de: Dictionary = {
       'Wartung & Support',
       'Noch unklar',
     ],
-    budgets: ['< 5.000 €', '5.000 – 15.000 €', '15.000 – 40.000 €', '40.000 € +', 'Noch unklar'],
+    budgets: ['Unter 1.000 €', '1.000 – 2.000 €', '2.000 – 3.000 €', 'Über 3.000 €', 'Noch unklar'],
     submit: 'Anfrage senden',
     sending: 'Wird gesendet…',
     success: 'Vielen Dank — Ihre Anfrage ist eingegangen. Wir melden uns innerhalb eines Werktags.',

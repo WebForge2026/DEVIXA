@@ -11,7 +11,7 @@ export const site = {
   contact: {
     support: 'support@devixa.de',
     office: 'office@devixa.de',
-    phoneDE: { display: '+49 151 29569444', href: 'tel:+4915129569444' },
+    phoneDE: { display: '+49 155 11419165', href: 'tel:+4915511419165' },
     phoneBG: { display: '+359 895 780 379', href: 'tel:+359895780379' },
   },
 } as const;

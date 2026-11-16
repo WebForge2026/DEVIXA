@@ -6,7 +6,7 @@ import { describe, it } from 'node:test';
 
 // Node 18 (local dev) has no global WebCrypto; Node 20+/22 do.
 if (!globalThis.crypto) (globalThis as { crypto?: unknown }).crypto = webcrypto;
-import { estimateRange, marketRange, featureIds } from '../lib/estimate';
+import { calculateDevixaPrice, featureIds } from '../lib/estimate';
 import { leadStatuses } from '../lib/admin/types';
 
 const php = (args: string[], input?: string) =>
@@ -24,20 +24,30 @@ const combos: [string, string[], string][] = [
   ['webshop', [], 'flexible'],
 ];
 
-describe('PHP parity — estimate pricing (lib/estimate.ts ↔ php/lib/estimate.php)', () => {
+
+describe('PHP parity - DEVIXA pricing', () => {
   for (const [system, features, timeline] of combos) {
     it(`${system} [${features.join(',')}] ${timeline}`, () => {
-      const expected = estimateRange(system as never, features as never, timeline as never);
-      const actual = JSON.parse(php(['php/lib/estimate.php', system, features.join(',') || '-', timeline]));
-      assert.deepEqual(actual, expected);
-    });
-    it(`market ${system} [${features.join(',')}] ${timeline}`, () => {
-      const expected = marketRange(system as never, features as never, timeline as never);
-      const actual = JSON.parse(php(['php/lib/estimate.php', system, features.join(',') || '-', timeline, '--market']));
+      const expected = calculateDevixaPrice(
+        system as never,
+        features as never,
+        timeline as never,
+      );
+
+      const phpCode = [
+        "require 'php/lib/estimate.php';",
+        `echo json_encode(devixa_calculate_price(`,
+        `${JSON.stringify(system)}, `,
+        `${JSON.stringify(features)}, `,
+        `${JSON.stringify(timeline)}));`,
+      ].join(' ');
+
+      const actual = JSON.parse(php(['-r', phpCode]));
       assert.deepEqual(actual, expected);
     });
   }
 });
+
 
 describe('PHP parity — normalizeStatus (lib/admin/types.ts ↔ php/lib/bootstrap.php)', () => {
   const cases: [string | null, string][] = [

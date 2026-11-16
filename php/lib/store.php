@@ -60,13 +60,41 @@ function devixa_create_contact_lead(string $name, string $email, ?string $compan
         ->execute([$name, $email, $company, $projectType, $budget, $message, $locale]);
 }
 
-function devixa_create_quote_lead(string $system, array $features, string $timeline, string $email, int $low, int $high, ?string $locale): void
-{
+
+function devixa_create_quote_lead(
+    string $system,
+    array $features,
+    string $timeline,
+    string $email,
+    ?int $low,
+    ?int $high,
+    ?string $locale
+): void {
+    if ($low === null || $high === null) {
+        $priceLabel = 'On request';
+    } elseif ($low === $high) {
+        $priceLabel = "EUR {$low}";
+    } else {
+        $priceLabel = "EUR {$low}-{$high}";
+    }
+
     devixa_pdo()->prepare(
-        'insert into project_estimates (system_type, features, timeline, contact_email, estimated_price, price_low, price_high, locale)
+        'insert into project_estimates
+         (system_type, features, timeline, contact_email,
+          estimated_price, price_low, price_high, locale)
          values (?,?,?,?,?,?,?,?)'
-    )->execute([$system, json_encode(array_values($features)), $timeline, $email, "EUR {$low}-{$high}", $low, $high, $locale]);
+    )->execute([
+        $system,
+        json_encode(array_values($features)),
+        $timeline,
+        $email,
+        $priceLabel,
+        $low,
+        $high,
+        $locale
+    ]);
 }
+
 
 /** @return array<int, array> unified Lead list, newest first, camelCase keys */
 function devixa_list_leads(): array

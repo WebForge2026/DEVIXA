@@ -10,14 +10,14 @@ export const de: LegalDocs = {
       {
         heading: 'Angaben gemäß § 5 DDG',
         body: [
-          `${legal.company} (${legal.companyBg})`,
-          `Eingetragener Sitz: ${fill(legal.address, p('Geschäftsadresse'))}, Bulgarien`,
+          `${legal.company}`,
+          `Eingetragener Sitz: ${fill(legal.addressLatin, p('Geschäftsadresse'))}`,
           'Devixa ist eine Marke der Creative Solutions 88 EOOD.',
         ],
       },
       {
         heading: 'Vertreten durch',
-        body: [`Geschäftsführer (Управител): ${fill(legal.managingDirector, p('Name des Geschäftsführers'))}`],
+        body: [`Geschäftsführer : ${fill(legal.managingDirectorLatin, p('Name des Geschäftsführers'))}`],
       },
       {
         heading: 'Kontakt',
@@ -31,8 +31,7 @@ export const de: LegalDocs = {
       {
         heading: 'Registereintrag',
         body: [
-          'Eingetragen im Handelsregister der Agentur für Eintragungen (Агенция по вписванията), Republik Bulgarien.',
-          `Einheitliche Identifikationsnummer (ЕИК): ${fill(legal.uic, p('ЕИК'))}`,
+          `Einheitliche Identifikationsnummer (UIC): ${fill(legal.uic, p('UIC'))}`,
         ],
       },
       {
@@ -41,7 +40,7 @@ export const de: LegalDocs = {
       },
       {
         heading: 'Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV',
-        body: [`${fill(legal.managingDirector, p('Name des Geschäftsführers'))}, Anschrift wie oben.`],
+        body: [`${fill(legal.managingDirectorLatin, p('Name des Geschäftsführers'))}, Anschrift wie oben.`],
       },
       {
         heading: 'Verbraucherstreitbeilegung',
@@ -76,8 +75,8 @@ export const de: LegalDocs = {
       {
         heading: '1. Verantwortlicher',
         body: [
-          `Verantwortlich für die Datenverarbeitung auf dieser Website im Sinne der Datenschutz-Grundverordnung (DSGVO) ist: ${legal.company}, ${fill(legal.address, p('Geschäftsadresse'))}, Bulgarien.`,
-          `Vertreten durch: ${fill(legal.managingDirector, p('Name des Geschäftsführers'))}. E-Mail: ${legal.emails.office}, Telefon: ${legal.phones.de}.`,
+          `Verantwortlich für die Datenverarbeitung auf dieser Website im Sinne der Datenschutz-Grundverordnung (DSGVO) ist: ${legal.company}, ${fill(legal.addressLatin, p('Geschäftsadresse'))}.`,
+          `Vertreten durch: ${fill(legal.managingDirectorLatin, p('Name des Geschäftsführers'))}. E-Mail: ${legal.emails.office}, Telefon: ${legal.phones.de}.`,
         ],
       },
       {

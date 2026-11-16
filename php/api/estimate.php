@@ -45,11 +45,25 @@ if (devixa_rate_limit('lead:' . devixa_client_ip(), 600_000, 5)) {
     devixa_json(['reason' => 'rate'], 429);
 }
 
-$range = devixa_estimate_range($system, $features, $timeline);
+
+$quote = devixa_calculate_price($system, $features, $timeline);
+
+$low = $quote === null ? null : $quote['price'];
+$high = $quote === null ? null : $quote['price'];
+
 try {
-    devixa_create_quote_lead($system, $features, $timeline, $email, $range['low'], $range['high'], $locale);
+    devixa_create_quote_lead(
+        $system,
+        $features,
+        $timeline,
+        $email,
+        $low,
+        $high,
+        $locale
+    );
 } catch (Throwable $error) {
     error_log('[leads] save failed: ' . $error->getMessage());
     devixa_json(['reason' => 'server'], 500);
 }
+
 devixa_json(['ok' => true]);

@@ -318,7 +318,7 @@ export const en: Dictionary = {
       'Maintenance & support',
       'Not sure yet',
     ],
-    budgets: ['< €5k', '€5k – €15k', '€15k – €40k', '€40k +', 'Not sure yet'],
+    budgets: ['Under €1,000', '€1,000 – €2,000', '€2,000 – €3,000', 'Over €3,000', 'Not sure yet'],
     submit: 'Send enquiry',
     sending: 'Sending…',
     success: 'Thank you — your enquiry has been received. We will get back to you within one working day.',

@@ -11,7 +11,7 @@ export const bg: LegalDocs = {
         heading: 'Информация съгласно § 5 DDG (германски Закон за цифровите услуги)',
         body: [
           `${legal.companyBg} (${legal.company})`,
-          `Седалище и адрес на управление: ${fill(legal.address, p('адрес'))}, България`,
+          `Седалище и адрес на управление: ${fill(legal.address, p('адрес'))}`,
           'Devixa е марка на „Криейтив Солюшънс 88“ ЕООД.',
         ],
       },
@@ -74,7 +74,7 @@ export const bg: LegalDocs = {
       {
         heading: '1. Администратор',
         body: [
-          `Администратор на личните данни на този уебсайт по смисъла на Общия регламент относно защитата на данните (GDPR) е: ${legal.companyBg}, ${fill(legal.address, p('адрес'))}, България.`,
+          `Администратор на личните данни на този уебсайт по смисъла на Общия регламент относно защитата на данните (GDPR) е: ${legal.companyBg}, ${fill(legal.address, p('адрес'))}.`,
           `Представлявано от: ${fill(legal.managingDirector, p('име на управителя'))}. Имейл: ${legal.emails.office}, телефон: ${legal.phones.bg}.`,
         ],
       },
