@@ -1,4 +1,37 @@
-run: npm run build
+name: deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Verify (typecheck · lint · test · build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install PHP (lint and backend parity tests)
+        run: sudo apt-get update -q && sudo apt-get install -y -q php-cli
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npm run lint
+      - run: npm test
+      - name: Build static export
+        run: npm run build
         env:
           NEXT_PUBLIC_SITE_URL: https://devixa.de
       - name: Assemble release tarball
@@ -77,3 +110,5 @@ run: npm run build
             printf 'Expected HTTP 200 from /api/health, received %s\n' "$status" >&2
             exit 1
           fi
+
+
