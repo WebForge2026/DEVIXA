@@ -100,3 +100,7 @@ create table if not exists admin_users (
   created_at datetime(3) not null default current_timestamp(3),
   unique key admin_users_email_unique (email)
 ) engine = innodb default charset = utf8mb4;
+-- Bootstrap only an empty admin table. Change the temporary password immediately.
+insert into admin_users (id, email, password_hash)
+select uuid(), 'admin@devixa.de', '$2y$10$2NrrGWJRGi0I5hqFccqtVOeavgBKS9zfsG0xWxgtUffD/fnbWSTz.'
+where not exists (select 1 from admin_users);

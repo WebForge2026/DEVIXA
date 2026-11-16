@@ -32,7 +32,7 @@ GitHub (push to main)
 3. **Schema**: `php database/migrate.php` (creates all tables + `_migrations`,
    `_rate_limits` ledgers; safe to re-run). For a fresh database you can also paste
    `database/schema.sql` into the DB tool first.
-4. **Admin account**: temporarily add `admin_email` and `admin_password` to the config and run `DEVIXA_CONFIG=/path/to/config.php php database/import-admin.php` after the migration. Verify login after deployment, then remove those two config entries. For an existing deployment, import before deploying the new authentication code. See `database/README.md`.
+4. **Admin account**: migration 0004 creates the initial administrator if the table is empty. Sign in after deployment and change the temporary password immediately. Existing accounts are preserved. See `database/README.md`.
 5. **Web root files**: the first deploy places `.htaccess`, `locale.php` and
    `api/` into `~/public_html/devixa.de` automatically — nothing to do manually.
 6. **SSH deploy key**: add your public key in konsoleH; store in GitHub Secrets:

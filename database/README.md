@@ -58,7 +58,7 @@ delete from site_presence where last_seen < utc_timestamp() - interval 1 day;
 
 ### Admin users
 
-Run `php database/migrate.php` and then, **before deploying the new authentication code**, run `DEVIXA_CONFIG=/path/to/config.php php database/import-admin.php`. This imports the configured `admin_email` and `admin_password` as a password hash only when there are no admin users. Back up the database first. Deploy the new PHP and frontend together, sign in with the existing credentials, then remove `admin_email` and `admin_password` from the config. Keep `admin_session_secret`: it signs sessions. Existing sessions must sign in again. Further administrators are managed under Admin → Users; all have full access. Password changes and account removal invalidate that user's sessions.
+Migration `0004_initial_admin.sql` creates `admin@devixa.de` with the requested temporary password if there are no admin users. It does not change existing users. Sign in and change the temporary password immediately; its hash is included in the repository. Keep `admin_session_secret` in the config to sign sessions. Further administrators are managed under Admin → Users; all have full access. Password changes and account removal invalidate that user's sessions.
 
 ### Run migrations over HTTPS
 
@@ -71,8 +71,8 @@ curl --fail-with-body -X POST https://devixa.de/api/migrate.php \
 unset DEVIXA_MIGRATION_KEY
 ```
 
-The JSON response lists applied and skipped migrations. Only run this over HTTPS. The key is sent in a header, not in the URL. Remove the key from the config when remote migration access is no longer needed. The endpoint runs SQL migrations only; the initial administrator import described above remains a separate CLI step.
+The JSON response lists applied and skipped migrations. Only run this over HTTPS. The key is sent in a header, not in the URL. Remove the key from the config when remote migration access is no longer needed. The endpoint runs SQL migrations only.
 
 ### GitHub Actions deployment
 
-The `deploy` workflow invokes `scripts/deploy.sh` over SSH. If `_devixa/config.php` exists, the script runs the release migrations using that config before copying the application files. A failed migration fails the deployment; already applied migrations are skipped. If the config is missing, migrations are skipped with a warning. This uses SSH and does not require the optional HTTP migration endpoint or `migration_key`. Initial admin import remains a separate one-time step.
+The `deploy` workflow invokes `scripts/deploy.sh` over SSH. If `_devixa/config.php` exists, the script runs the release migrations using that config before copying the application files. A failed migration fails the deployment; already applied migrations are skipped. If the config is missing, migrations are skipped with a warning. This uses SSH and does not require the optional HTTP migration endpoint or `migration_key`.
