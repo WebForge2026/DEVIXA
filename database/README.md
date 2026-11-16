@@ -72,3 +72,7 @@ unset DEVIXA_MIGRATION_KEY
 ```
 
 The JSON response lists applied and skipped migrations. Only run this over HTTPS. The key is sent in a header, not in the URL. Remove the key from the config when remote migration access is no longer needed. The endpoint runs SQL migrations only; the initial administrator import described above remains a separate CLI step.
+
+### GitHub Actions deployment
+
+The `deploy` workflow invokes `scripts/deploy.sh` over SSH. If `_devixa/config.php` exists, the script runs the release migrations using that config before copying the application files. A failed migration fails the deployment; already applied migrations are skipped. If the config is missing, migrations are skipped with a warning. This uses SSH and does not require the optional HTTP migration endpoint or `migration_key`. Initial admin import remains a separate one-time step.

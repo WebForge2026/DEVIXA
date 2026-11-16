@@ -30,6 +30,15 @@ fi
 
 mkdir -p "$APP_ROOT"
 
+# Apply the release migrations before publishing its application files.
+# Pass the config explicitly: APP_ROOT may differ from the default home path.
+if [ -f "$APP_ROOT/_devixa/config.php" ]; then
+  echo "Миграции ..."
+  DEVIXA_CONFIG="$APP_ROOT/_devixa/config.php" php release/database/migrate.php
+else
+  echo "ВНИМАНИЕ: $APP_ROOT/_devixa/config.php липсва — миграциите са пропуснати."
+fi
+
 echo "Копиране на сайта в $APP_ROOT ..."
 cp -rf release/site/. "$APP_ROOT/"
 
@@ -47,13 +56,6 @@ cp -rf release/database/. "$APP_ROOT/_devixa/database/"
 [ -f "$APP_ROOT/locale.php" ] || cp release/deploy/locale.php "$APP_ROOT/locale.php"
 chmod 644 "$APP_ROOT/.htaccess" "$APP_ROOT/locale.php" "$APP_ROOT"/api/*.php "$APP_ROOT"/api/admin/*.php 2>/dev/null || true
 chmod 600 "$APP_ROOT"/_devixa/config.php 2>/dev/null || true
-
-if [ -f "$APP_ROOT/_devixa/config.php" ]; then
-  echo "Миграции ..."
-  (cd "$APP_ROOT/_devixa/database" && php migrate.php)
-else
-  echo "ВНИМАНИЕ: $APP_ROOT/_devixa/config.php липсва — създай го от release/devixa.config.example.php."
-fi
 
 cat <<EOF
 
