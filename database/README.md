@@ -55,3 +55,7 @@ DATABASE_URL=mysql://user:pass@host:3306/dbname npm run db:migrate
 delete from site_events where created_at < utc_timestamp() - interval 13 month;
 delete from site_presence where last_seen < utc_timestamp() - interval 1 day;
 ```
+
+### Admin users
+
+Run `php database/migrate.php` and then, **before deploying the new authentication code**, run `DEVIXA_CONFIG=/path/to/config.php php database/import-admin.php`. This imports the configured `admin_email` and `admin_password` as a password hash only when there are no admin users. Back up the database first. Deploy the new PHP and frontend together, sign in with the existing credentials, then remove `admin_email` and `admin_password` from the config. Keep `admin_session_secret`: it signs sessions. Existing sessions must sign in again. Further administrators are managed under Admin → Users; all have full access. Password changes and account removal invalidate that user's sessions.

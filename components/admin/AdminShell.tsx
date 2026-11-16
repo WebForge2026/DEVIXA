@@ -1,6 +1,6 @@
 'use client';
 
-import { Activity, AlertTriangle, ArrowUpRight, Inbox, LayoutDashboard, LogOut, PenSquare } from 'lucide-react';
+import { Activity, AlertTriangle, ArrowUpRight, Inbox, LayoutDashboard, LogOut, PenSquare, Users } from 'lucide-react';
 import Link from '@/components/ui/Link';
 import { useLocation } from 'react-router-dom';
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
@@ -33,12 +33,14 @@ const NAV = [
   { href: '/admin/analytics', label: 'Live Analytics', icon: Activity },
   { href: '/admin/leads', label: 'Leads & Quotes', icon: Inbox },
   { href: '/admin/content', label: 'Content & Media CMS', icon: PenSquare },
+  { href: '/admin/users', label: 'Users', icon: Users },
 ] as const;
 
 const TITLES: Record<string, { title: string; subtitle: string; ranged: boolean }> = {
   '/admin': { title: 'Command Center', subtitle: 'Live website telemetry & lead operations', ranged: true },
   '/admin/analytics': { title: 'Live Analytics', subtitle: 'Traffic, real-time visitors & activity', ranged: true },
   '/admin/leads': { title: 'Leads & Quotes', subtitle: 'Calculator submissions and contact enquiries', ranged: false },
+  '/admin/users': { title: 'Users', subtitle: 'Manage administrator access', ranged: false },
   '/admin/content': { title: 'Content & Media CMS', subtitle: 'Texts, images and design of the public website', ranged: false },
 };
 

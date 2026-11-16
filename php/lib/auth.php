@@ -16,19 +16,13 @@ function devixa_admin_config(): array
 {
     $config = devixa_config();
     $isProduction = ($config['env'] ?? 'production') === 'production';
-    $email = strtolower(trim((string) ($config['admin_email'] ?? 'admin@devixa.de')));
-    $password = $config['admin_password'] ?? null;
-    if (!$isProduction && ($password === null || $password === '')) {
-        $password = 'devixa-admin-2026'; // local development default only (mirrors the TS dev fallback)
-    }
     $secret = $config['admin_session_secret'] ?? null;
     if (!$isProduction && ($secret === null || $secret === '')) {
         $secret = 'dev-only-insecure-session-secret-change-me';
     }
-    $enabled = is_string($password) && $password !== ''
-        && is_string($secret) && $secret !== ''
+    $enabled = is_string($secret) && $secret !== ''
         && (!$isProduction || strlen($secret) >= 32);
-    return ['email' => $email, 'password' => $password, 'secret' => $secret, 'enabled' => $enabled];
+    return ['secret' => $secret, 'enabled' => $enabled];
 }
 
 function devixa_b64url_encode(string $data): string
@@ -41,13 +35,18 @@ function devixa_b64url_decode(string $data): string
     return base64_decode(strtr($data, '-_', '+/'), true) ?: '';
 }
 
-function devixa_create_session_token(string $email): string
+function devixa_create_session_token(string $email, ?string $id = null, ?string $passwordHash = null): string
 {
     $secret = devixa_admin_config()['secret'];
     if (!is_string($secret) || $secret === '') {
         throw new RuntimeException('Admin session secret missing');
     }
-    $payload = devixa_b64url_encode(json_encode(['email' => $email, 'exp' => devixa_now_ms() + SESSION_HOURS * 3600_000]));
+    $data = ['email' => $email, 'exp' => devixa_now_ms() + SESSION_HOURS * 3600_000];
+    if ($id !== null && $passwordHash !== null) {
+        $data['id'] = $id;
+        $data['credential'] = hash_hmac('sha256', $passwordHash, $secret);
+    }
+    $payload = devixa_b64url_encode(json_encode($data));
     $sig = devixa_b64url_encode(hash_hmac('sha256', $payload, $secret, true));
     return $payload . '.' . $sig;
 }
@@ -75,7 +74,7 @@ function devixa_verify_session_token(?string $token): ?array
     if (!is_numeric($json['exp']) || (float) $json['exp'] < devixa_now_ms()) {
         return null;
     }
-    return ['email' => (string) $json['email']];
+    return ['email' => (string) $json['email'], 'id' => $json['id'] ?? null, 'credential' => $json['credential'] ?? null];
 }
 
 function devixa_session_cookie_options(): array
@@ -90,11 +89,23 @@ function devixa_session_cookie_options(): array
     ];
 }
 
-/** Returns the admin session or responds 401 and exits (ports lib/admin/session.ts). */
-function devixa_require_admin(): array
+/** A signed token is valid only while its database user and credentials still exist. */
+function devixa_current_admin(): ?array
 {
     $token = $_COOKIE[ADMIN_COOKIE] ?? null;
     $session = is_string($token) ? devixa_verify_session_token($token) : null;
+    if (!$session || !is_string($session['id']) || !is_string($session['credential'])) return null;
+    $stmt = devixa_pdo()->prepare('select id, email, password_hash from admin_users where id = ?');
+    $stmt->execute([$session['id']]);
+    $user = $stmt->fetch();
+    if (!$user || !hash_equals(hash_hmac('sha256', $user['password_hash'], devixa_admin_config()['secret']), $session['credential'])) return null;
+    return ['id' => $user['id'], 'email' => $user['email']];
+}
+
+/** Returns the admin session or responds 401 and exits (ports lib/admin/session.ts). */
+function devixa_require_admin(): array
+{
+    $session = devixa_current_admin();
     if ($session !== null) {
         return $session;
     }

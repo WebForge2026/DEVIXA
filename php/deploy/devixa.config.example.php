@@ -12,7 +12,6 @@ return [
     'database_url' => 'mysql://user:password@host:3306/databasename',
 
     // Admin Command Center credentials (never commit real values).
-    'admin_email' => 'admin@devixa.de',
-    'admin_password' => '',
+    // Admin users are stored in MariaDB; see database/README.md for initial import.
     'admin_session_secret' => '', // openssl rand -base64 48
 ];

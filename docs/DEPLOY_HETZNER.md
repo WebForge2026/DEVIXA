@@ -26,17 +26,18 @@ GitHub (push to main)
 1. **MariaDB** (konsoleH → Databases): database `devixa` + user. MariaDB ≥ 10.2.
 2. **Secrets file**: create `public_html/devixa.de/_devixa/config.php` (`chmod 600`) from
    `php/deploy/devixa.config.example.php` with the real `database_url`,
-   `admin_email`, `admin_password`, `admin_session_secret` (≥ 32 chars,
+   `admin_session_secret` (≥ 32 chars,
    `openssl rand -base64 48`). This file lives **outside `public_html`** and is
-   the only place credentials exist.
+   the place for database and session secrets. Admin credentials are stored in MariaDB.
 3. **Schema**: `php database/migrate.php` (creates all tables + `_migrations`,
    `_rate_limits` ledgers; safe to re-run). For a fresh database you can also paste
    `database/schema.sql` into the DB tool first.
-4. **Web root files**: the first deploy places `.htaccess`, `locale.php` and
+4. **Admin account**: temporarily add `admin_email` and `admin_password` to the config and run `DEVIXA_CONFIG=/path/to/config.php php database/import-admin.php` after the migration. Verify login after deployment, then remove those two config entries. For an existing deployment, import before deploying the new authentication code. See `database/README.md`.
+5. **Web root files**: the first deploy places `.htaccess`, `locale.php` and
    `api/` into `~/public_html/devixa.de` automatically — nothing to do manually.
-5. **SSH deploy key**: add your public key in konsoleH; store in GitHub Secrets:
+6. **SSH deploy key**: add your public key in konsoleH; store in GitHub Secrets:
    `HETZNER_HOST`, `HETZNER_USER`, `HETZNER_SSH_PORT` (default 22), `HETZNER_SSH_KEY`.
-6. **DNS**: point devixa.de at the webhosting as usual — Apache serves everything
+7. **DNS**: point devixa.de at the webhosting as usual — Apache serves everything
    (no port/proxy configuration needed).
 
 ## Deploy

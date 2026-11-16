@@ -6,8 +6,6 @@
  *   <?php return [
  *     'env' => 'production',                                  // or 'development'
  *     'database_url' => 'mysql://user:password@host:3306/db', // Hetzner MariaDB
- *     'admin_email' => 'admin@devixa.de',
- *     'admin_password' => '…',                                // empty = login disabled
  *     'admin_session_secret' => '…',                          // ≥ 32 chars in production
  *   ];
  *

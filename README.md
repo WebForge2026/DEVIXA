@@ -95,7 +95,7 @@ supabase/schema.sql         ARCHIVED pre-migration PostgreSQL schema (audit/roll
 - Hidden route **`/admin`** (not linked anywhere, `noindex`, blocked in robots.txt) or shortcut
   **Ctrl/⌘ + Shift + A** (fallback **Alt + Shift + A**) on any public page.
 - Login: `ADMIN_EMAIL` / `ADMIN_PASSWORD` env vars; session = HMAC-signed HttpOnly cookie (12 h),
-  5 attempts / 10 min. Local `npm run dev` without env vars: `admin@devixa.de` / `devixa-admin-2026`.
+  5 attempts / 10 min. Admin credentials are stored in MariaDB; see `database/README.md` for the initial import.
 - Modules: Command Center (KPIs, trends, funnel, conversion gauge, 12-week heatmap), Live Analytics,
   Leads & Quotes (CRM with search, filters, status, notes, lead inspector), Content & Media CMS
   (texts per language, project images, design settings with reset).

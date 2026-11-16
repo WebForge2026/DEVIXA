@@ -5,6 +5,7 @@ import { LoginForm } from '@/components/admin/LoginForm';
 import { OverviewView } from '@/components/admin/OverviewView';
 import { AnalyticsView } from '@/components/admin/AnalyticsView';
 import { LeadsView } from '@/components/admin/LeadsView';
+import { UsersView } from '@/components/admin/UsersView';
 import { ContentView } from '@/components/admin/ContentView';
 import { isLocale, type Locale } from '@/lib/i18n/config';
 import { preferredLocale } from './lib/locale';
@@ -82,6 +83,7 @@ export const App = () => (
     <Route path="/admin" element={<Panel><OverviewView /></Panel>} />
     <Route path="/admin/analytics" element={<Panel><AnalyticsView /></Panel>} />
     <Route path="/admin/leads" element={<Panel><LeadsView /></Panel>} />
+    <Route path="/admin/users" element={<Panel><UsersView /></Panel>} />
     <Route path="/admin/content" element={<Panel><ContentView /></Panel>} />
 
     <Route path="*" element={<LocaleGate />} />

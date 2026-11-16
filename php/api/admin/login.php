@@ -10,7 +10,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
 }
 
 $config = devixa_admin_config();
-if (!$config['enabled'] || !is_string($config['password'])) {
+if (!$config['enabled']) {
     devixa_json(['error' => 'disabled'], 503);
 }
 $ip = devixa_client_ip();
@@ -21,7 +21,11 @@ if (devixa_rate_limit('login:' . $ip, 600_000, 5)) {
 $body = devixa_json_body();
 $email = isset($body['email']) && is_string($body['email']) ? strtolower(trim($body['email'])) : '';
 $password = isset($body['password']) && is_string($body['password']) ? $body['password'] : '';
-$valid = devixa_safe_equal($email, $config['email']) && devixa_safe_equal($password, $config['password']);
+$stmt = devixa_pdo()->prepare('select id, email, password_hash from admin_users where email = ?');
+$stmt->execute([$email]);
+$user = $stmt->fetch();
+$valid = password_verify($password, $user ? $user['password_hash'] : '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.');
+$valid = $user && $valid;
 
 if (!$valid) {
     devixa_audit('admin.login_failed', [], $email, $ip);
@@ -30,5 +34,5 @@ if (!$valid) {
 }
 
 devixa_audit('admin.login', [], $email, $ip);
-setcookie(ADMIN_COOKIE, devixa_create_session_token($email), devixa_session_cookie_options());
+setcookie(ADMIN_COOKIE, devixa_create_session_token($user['email'], $user['id'], $user['password_hash']), devixa_session_cookie_options());
 devixa_json(['ok' => true]);
